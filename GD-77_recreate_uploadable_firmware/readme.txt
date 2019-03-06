@@ -1,0 +1,1 @@
+This is currently for FW version 3.1.1 and 3.1.8 only!
