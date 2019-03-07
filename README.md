@@ -1,8 +1,10 @@
 # GD-77
-GD-77 reverse engineering
+GD-77 and GD-77S reverse engineering
 
 # Details
 "Radioddity_GD-77" contains the original encrypted GD-77 firmware files collected by Roger Clark (https://github.com/rogerclarkmelbourne/Radioddity_GD-77.git) as they also are or have been available on the Radioddity web site.
+
+"Radioddity_GD-77S" contain original encrypted GD-77S firmware files as they also are or have been available on the Radioddity web site.
 
 "GD-77_firmware_stripper" contains the source for the firmware stripping tool. It removes the header and seperates the raw encrytped firmware data as it is transfered by the uploader.
 
