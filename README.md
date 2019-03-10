@@ -16,4 +16,6 @@ GD-77 and GD-77S reverse engineering
  
 "GD-77_recreate_uploadable_firmware" contains the toolchain to recreate an uploadable firmware file. It takes a decrypted (and maybe patched) firmware file, encrypts it again and copyies the original header in front. The result is an uploadable firmware file.
 
+"GD-77_flash_readout" contains patched firmware and tools to get a flush flash readout.
+
 "Experimental" contains stuff like one time use software and/or preliminary tools to perform some very hacky tasks.
