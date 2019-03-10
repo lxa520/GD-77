@@ -19,5 +19,3 @@ GD-77 and GD-77S reverse engineering
 "GD-77_flash_readout" contains patched firmware and tools to get a flush flash readout.
 
 "cpu-id readout" contains tools to calculate the data necessary to patch "full_flash.dat" so that the bootloader and the main application survive their CPU-UID checks.
-
-"Experimental" contains stuff like one time use software and/or preliminary tools to perform some very hacky tasks.

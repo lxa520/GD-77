@@ -1,1 +1,0 @@
-Download the Inno setup from http://www.jrsoftware.org/isinfo.php to create the installer
