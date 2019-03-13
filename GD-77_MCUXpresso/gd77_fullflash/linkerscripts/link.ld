@@ -6,11 +6,11 @@
  * Generated linker script file for MK22FN512xxx12
  * Created from linkscript.ldt by FMCreateLinkLibraries
  * Using Freemarker v2.3.23
- * MCUXpresso IDE v10.3.1 [Build 2233] [2019-02-20] on 13.03.2019 09:49:42
+ * MCUXpresso IDE v10.3.1 [Build 2233] [2019-02-20] on 13.03.2019 14:33:33
  */
 
-INCLUDE "../linkerscripts/gd77_fullflash_Debug_library.ld"
-INCLUDE "../linkerscripts/gd77_fullflash_Debug_memory.ld"
+INCLUDE "../linkerscripts/library.ld"
+INCLUDE "../linkerscripts/memory.ld"
 
 ResetISR = 0x00000004;  
 ENTRY(ResetISR)
@@ -22,8 +22,10 @@ SECTIONS
        . = 0x00000000;
        *(.full_flash*)
         KEEP(*(.full_flash))
+       *(.text*)
+        KEEP(*(.text))
     } > PROGRAM_FLASH
-    
+
     /*
      * for exception handling/unwind - some Newlib functions (in common
      * with C++ and STDC++) use this. 
@@ -151,5 +153,5 @@ SECTIONS
      */
     _image_start = LOADADDR(.text);
     _image_end = LOADADDR(.data) + SIZEOF(.data);
-    _image_size = _image_end - _image_start;    
+    _image_size = _image_end - _image_start;
 }

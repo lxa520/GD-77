@@ -1,5 +1,7 @@
 Prerequisites:
 - MCUXpressoIDE_10.3.1_2233 (with installed SDK_2.5.0_FRDM-K22F)
+  Important: If you are using J-Link please upgrade to J-Link >= 6.43,
+  otherwise the MK22FN512xxx12 won't work.
 
 This project is for debugging an unmodified GD77 full flash readout.
 
