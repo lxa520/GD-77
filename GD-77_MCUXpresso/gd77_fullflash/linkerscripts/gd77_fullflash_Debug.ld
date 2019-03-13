@@ -22,7 +22,7 @@ SECTIONS
        . = 0x00000000;
        *(.full_flash*)
         KEEP(*(.full_flash))
-    } > MFlash32
+    } > PROGRAM_FLASH
     
     /*
      * for exception handling/unwind - some Newlib functions (in common
@@ -31,14 +31,14 @@ SECTIONS
     .ARM.extab : ALIGN(4) 
     {
         *(.ARM.extab* .gnu.linkonce.armextab.*)
-    } > MFlash32
+    } > PROGRAM_FLASH
 
     __exidx_start = .;
 
     .ARM.exidx : ALIGN(4)
     {
         *(.ARM.exidx* .gnu.linkonce.armexidx.*)
-    } > MFlash32
+    } > PROGRAM_FLASH
     __exidx_end = .;
  
     _etext = .;
@@ -48,16 +48,29 @@ SECTIONS
     .m_usb_data (NOLOAD) :
     {
         *(m_usb_bdt)
-    } > RamLoc8
+    } > SRAM_UPPER
+    /* DATA section for SRAM_LOWER */
+
+    .data_RAM2 : ALIGN(4)
+    {
+        FILL(0xff)
+        PROVIDE(__start_data_RAM2 = .) ;
+        *(.ramfunc.$RAM2)
+        *(.ramfunc.$SRAM_LOWER)
+        *(.data.$RAM2*)
+        *(.data.$SRAM_LOWER*)
+        . = ALIGN(4) ;
+        PROVIDE(__end_data_RAM2 = .) ;
+     } > SRAM_LOWER AT>PROGRAM_FLASH
     /* MAIN DATA SECTION */
     .uninit_RESERVED : ALIGN(4)
     {
         KEEP(*(.bss.$RESERVED*))
         . = ALIGN(4) ;
         _end_uninit_RESERVED = .;
-    } > RamLoc8
+    } > SRAM_UPPER
 
-    /* Main DATA section (RamLoc8) */
+    /* Main DATA section (SRAM_UPPER) */
     .data : ALIGN(4)
     {
        FILL(0xff)
@@ -67,7 +80,17 @@ SECTIONS
        *(.data*)
        . = ALIGN(4) ;
        _edata = . ;
-    } > RamLoc8 AT>MFlash32
+    } > SRAM_UPPER AT>PROGRAM_FLASH
+
+    /* BSS section for SRAM_LOWER */
+    .bss_RAM2 : ALIGN(4)
+    {
+       PROVIDE(__start_bss_RAM2 = .) ;
+       *(.bss.$RAM2*)
+       *(.bss.$SRAM_LOWER*)
+       . = ALIGN (. != 0 ? 4 : 1) ; /* avoid empty segment */
+       PROVIDE(__end_bss_RAM2 = .) ;
+    } > SRAM_LOWER 
 
     /* MAIN BSS SECTION */
     .bss : ALIGN(4)
@@ -78,7 +101,15 @@ SECTIONS
         . = ALIGN(4) ;
         _ebss = .;
         PROVIDE(end = .);
-    } > RamLoc8
+    } > SRAM_UPPER
+
+    /* NOINIT section for SRAM_LOWER */
+    .noinit_RAM2 (NOLOAD) : ALIGN(4)
+    {
+       *(.noinit.$RAM2*)
+       *(.noinit.$SRAM_LOWER*)
+       . = ALIGN(4) ;
+    } > SRAM_LOWER 
 
     /* DEFAULT NOINIT SECTION */
     .noinit (NOLOAD): ALIGN(4)
@@ -87,31 +118,31 @@ SECTIONS
         *(.noinit*) 
          . = ALIGN(4) ;
         _end_noinit = .;
-    } > RamLoc8
+    } > SRAM_UPPER
 
     /* Reserve and place Heap within memory map */
-    _HeapSize = 0x200;
+    _HeapSize = 0x1000;
     .heap :  ALIGN(4)
     {
         _pvHeapStart = .;
         . += _HeapSize;
         . = ALIGN(4);
         _pvHeapLimit = .;
-    } > RamLoc8
+    } > SRAM_UPPER
 
-     _StackSize = 0x200;
+     _StackSize = 0x1000;
      /* Reserve space in memory for Stack */
     .heap2stackfill  :
     {
         . += _StackSize;
-    } > RamLoc8
+    } > SRAM_UPPER
     /* Locate actual Stack in memory map */
-    .stack ORIGIN(RamLoc8) + LENGTH(RamLoc8) - _StackSize - 0:  ALIGN(4)
+    .stack ORIGIN(SRAM_UPPER) + LENGTH(SRAM_UPPER) - _StackSize - 0:  ALIGN(4)
     {
         _vStackBase = .;
         . = ALIGN(4);
         _vStackTop = . + _StackSize;
-    } > RamLoc8
+    } > SRAM_UPPER
 
     /* Provide basic symbols giving location and size of main text
      * block, including initial values of RW data sections. Note that
@@ -120,5 +151,5 @@ SECTIONS
      */
     _image_start = LOADADDR(.text);
     _image_end = LOADADDR(.data) + SIZEOF(.data);
-    _image_size = _image_end - _image_start;
+    _image_size = _image_end - _image_start;    
 }
