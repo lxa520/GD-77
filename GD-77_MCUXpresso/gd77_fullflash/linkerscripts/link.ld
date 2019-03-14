@@ -20,10 +20,10 @@ SECTIONS
     .text :
     {
        . = 0x00000000;
-       *(.full_flash*)
+       *(.full_flash)
         KEEP(*(.full_flash))
        *(.text*)
-        KEEP(*(.text))
+        KEEP(*(.text*))
     } > PROGRAM_FLASH
 
     /*
