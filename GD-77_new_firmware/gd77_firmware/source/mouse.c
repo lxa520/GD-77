@@ -196,13 +196,33 @@ static usb_status_t USB_DeviceHidMouseCallback(class_handle_t handle, uint32_t e
                 {
                     return error;
                 }
-                error = USB_DeviceHidMouseAction();
+                //error = USB_DeviceHidMouseAction();
             }
             break;
         case kUSB_DeviceHidEventGetReport:
+            break;
         case kUSB_DeviceHidEventSetReport:
+        	g_UsbDeviceHidMouse.buffer[0]=0x03;
+            for (int i=0; i<32; i++)
+            {
+            	g_UsbDeviceHidMouse.buffer[i+4]=255-g_UsbDeviceHidMouse.buffer[i+4];
+            }
+            error = USB_DeviceHidSend(g_UsbDeviceHidMouse.hidHandle, USB_HID_MOUSE_ENDPOINT_IN, g_UsbDeviceHidMouse.buffer, USB_HID_MOUSE_REPORT_LENGTH);
+            break;
         case kUSB_DeviceHidEventRequestReportBuffer:
-            error = kStatus_USB_InvalidRequest;
+            if (g_UsbDeviceHidMouse.attach)
+            {
+            	usb_device_hid_report_struct_t *g_output_report = (usb_device_hid_report_struct_t *)param;
+            	if (g_output_report->reportLength <= USB_HID_MOUSE_REPORT_LENGTH)
+            	{
+                	g_output_report->reportBuffer = g_UsbDeviceHidMouse.buffer;
+            	}
+            	error = kStatus_USB_Success;
+            }
+            else
+            {
+            	error = kStatus_USB_InvalidRequest;
+            }
             break;
         case kUSB_DeviceHidEventGetIdle:
         case kUSB_DeviceHidEventGetProtocol:
@@ -282,7 +302,7 @@ static usb_status_t USB_DeviceCallback(usb_device_handle handle, uint32_t event,
                 /* Set device configuration request */
                 g_UsbDeviceHidMouse.attach = 1U;
                 g_UsbDeviceHidMouse.currentConfiguration = *temp8;
-                error = USB_DeviceHidMouseAction();
+                //error = USB_DeviceHidMouseAction();
             }
             else
             {
@@ -298,10 +318,10 @@ static usb_status_t USB_DeviceCallback(usb_device_handle handle, uint32_t event,
                 if (interface < USB_HID_MOUSE_INTERFACE_COUNT)
                 {
                     g_UsbDeviceHidMouse.currentInterfaceAlternateSetting[interface] = alternateSetting;
-                    if (alternateSetting == 0U)
-                    {
-                        error = USB_DeviceHidMouseAction();
-                    }
+                    //if (alternateSetting == 0U)
+                    //{
+                    //    error = USB_DeviceHidMouseAction();
+                    //}
                 }
             }
             break;

@@ -82,8 +82,8 @@ uint8_t g_UsbDeviceDescriptor[] = {
     USB_DEVICE_PROTOCOL,                                 /* Protocol code (assigned by the USB-IF). */
     USB_CONTROL_MAX_PACKET_SIZE,                         /* Maximum packet size for endpoint zero
                                                             (only 8, 16, 32, or 64 are valid) */
-    0xC9U, 0x1FU,                                        /* Vendor ID (assigned by the USB-IF) */
-    0x91U, 0x00U,                                        /* Product ID (assigned by the manufacturer) */
+    0xA2U, 0x15U,                                        /* Vendor ID (assigned by the USB-IF) */
+    0x73U, 0x00U,                                        /* Product ID (assigned by the manufacturer) */
     USB_SHORT_GET_LOW(USB_DEVICE_DEMO_BCD_VERSION),
     USB_SHORT_GET_HIGH(USB_DEVICE_DEMO_BCD_VERSION), /* Device release number in binary-coded decimal */
     0x01U,                                           /* Index of string descriptor describing manufacturer */
@@ -95,39 +95,47 @@ uint8_t g_UsbDeviceDescriptor[] = {
 
 USB_DMA_INIT_DATA_ALIGN(USB_DATA_ALIGN_SIZE)
 uint8_t g_UsbDeviceHidMouseReportDescriptor[] = {
-    0x05U, 0x01U, /* Usage Page (Generic Desktop)*/
-    0x09U, 0x02U, /* Usage (Mouse) */
-    0xA1U, 0x01U, /* Collection (Application) */
-    0x09U, 0x01U, /* Usage (Pointer) */
+	0x06, 0x00, 0xff, // Usage Page
+	0x09, 0x01, // Usage Pointer
+	0xa1, 0x01, // Collection Application
 
-    0xA1U, 0x00U, /* Collection (Physical) */
-    0x05U, 0x09U, /* Usage Page (Buttons) */
-    0x19U, 0x01U, /* Usage Minimum (01U) */
-    0x29U, 0x03U, /* Usage Maximum (03U) */
+	0x85, 0x01, // Report ID 1
+	0x19, 0x01, // Usage Minimum
+	0x29, 0x01,  // Usage Maximum
+	0x15, 0x00, // Logical Minimum
+	0x26, 0xff, 0x00, // Logical Maximum
+	0x75, 0x08, // Report size 0x08
+	0x95, 0x29, // Report count 0x29
+	0x91, 0x02, // Output(Data, Variable, Absolute)
 
-    0x15U, 0x00U, /* Logical Minimum (0U) */
-    0x25U, 0x01U, /* Logical Maximum (1U) */
-    0x95U, 0x03U, /* Report Count (3U) */
-    0x75U, 0x01U, /* Report Size (1U) */
+	0x85, 0x02, // Report ID 2
+	0x19, 0x01, // Usage Minimum
+	0x29, 0x01, // Usage Maximum
+	0x15, 0x00, // Logical Minimum
+	0x26, 0xff, 0x00, // Logical Maximum
+	0x75, 0x08, // Report size 0x08
+	0x95, 0x29, // Report count 0x29
+	0x91, 0x02, // Output(Data, Variable, Absolute)
 
-    0x81U, 0x02U, /* Input(Data, Variable, Absolute) 3U button bit fields */
-    0x95U, 0x01U, /* Report Count (1U) */
-    0x75U, 0x05U, /* Report Size (5U) */
-    0x81U, 0x01U, /* Input (Constant), 5U constant field */
+	0x85, 0x03, // Report ID 3
+	0x19, 0x01, // Usage Minimum
+	0x29, 0x01, // Usage Maximum
+	0x15, 0x00, // Logical Minimum
+	0x26, 0xff, 0x00, // Logical Maximum
+	0x75, 0x08, // Report size 0x08
+	0x95, 0x29, // Report count 0x29
+	0x81, 0x02, // Input(Data, Variable, Absolute)
 
-    0x05U, 0x01U, /* Usage Page (Generic Desktop) */
-    0x09U, 0x30U, /* Usage (X) */
-    0x09U, 0x31U, /* Usage (Y) */
-    0x09U, 0x38U, /* Usage (Z) */
+	0x85, 0x04, // Report ID 4
+	0x19, 0x01, // Usage Minimum
+	0x29, 0x01, // Usage Maximum
+	0x15, 0x00, // Logical Minimum
+	0x26, 0xff, 0x00, // Logical Maximum
+	0x75, 0x08, // Report size 0x08
+	0x95, 0x29, // Report count 0x29
+	0x81, 0x02, // Input(Data, Variable, Absolute)
 
-    0x15U, 0x81U, /* Logical Minimum (-127) */
-    0x25U, 0x7FU, /* Logical Maximum (127) */
-    0x75U, 0x08U, /* Report Size (8U) */
-    0x95U, 0x03U, /* Report Count (3U) */
-
-    0x81U, 0x06U, /* Input(Data, Variable, Relative), Three position bytes (X & Y & Z)*/
-    0xC0U,        /* End collection, Close Pointer collection*/
-    0xC0U         /* End collection, Close Mouse collection */
+	0xc0 // End of Collection Application
 };
 
 USB_DMA_INIT_DATA_ALIGN(USB_DATA_ALIGN_SIZE)
