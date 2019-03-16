@@ -21,3 +21,6 @@ GD-77 and GD-77S reverse engineering
 "GD-77_cpu-id_calc" contains tools to calculate the data necessary to patch "full_flash.dat" so that the bootloader and the main application survive their CPU-UID checks.
 
 "GD-77_MCUXpresso" contains the MCUXpresso projects.
+
+# Experimental only
+"GD-77_new_firmware" contains the MCUXpresso project and the tools that will lead to a new GD-77 firmware written from scratch.
