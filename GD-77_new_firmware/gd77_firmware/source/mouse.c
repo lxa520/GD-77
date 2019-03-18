@@ -32,6 +32,8 @@
 #endif
 
 #include "fsl_common.h"
+#include "fsl_port.h"
+#include "fsl_gpio.h"
 #include "pin_mux.h"
 /*******************************************************************************
  * Definitions
@@ -47,7 +49,6 @@ void USB_DeviceIsrEnable(void);
 void USB_DeviceTaskFn(void *deviceHandle);
 #endif
 
-static usb_status_t USB_DeviceHidMouseAction(void);
 static usb_status_t USB_DeviceHidMouseCallback(class_handle_t handle, uint32_t event, void *param);
 static usb_status_t USB_DeviceCallback(usb_device_handle handle, uint32_t event, void *param);
 static void USB_DeviceApplicationInit(void);
@@ -116,69 +117,55 @@ void USB_DeviceTaskFn(void *deviceHandle)
 }
 #endif
 
-/* Update mouse pointer location. Draw a rectangular rotation*/
-static usb_status_t USB_DeviceHidMouseAction(void)
+gpio_pin_config_t pin_config_input =
 {
-    static int8_t x = 0U;
-    static int8_t y = 0U;
-    enum
-    {
-        RIGHT,
-        DOWN,
-        LEFT,
-        UP
-    };
-    static uint8_t dir = RIGHT;
+	kGPIO_DigitalInput,
+	0
+};
 
-    switch (dir)
-    {
-        case RIGHT:
-            /* Move right. Increase X value. */
-            g_UsbDeviceHidMouse.buffer[1] = 2U;
-            g_UsbDeviceHidMouse.buffer[2] = 0U;
-            x++;
-            if (x > 99U)
-            {
-                dir++;
-            }
-            break;
-        case DOWN:
-            /* Move down. Increase Y value. */
-            g_UsbDeviceHidMouse.buffer[1] = 0U;
-            g_UsbDeviceHidMouse.buffer[2] = 2U;
-            y++;
-            if (y > 99U)
-            {
-                dir++;
-            }
-            break;
-        case LEFT:
-            /* Move left. Discrease X value. */
-            g_UsbDeviceHidMouse.buffer[1] = (uint8_t)(-2);
-            g_UsbDeviceHidMouse.buffer[2] = 0U;
-            x--;
-            if (x < 2U)
-            {
-                dir++;
-            }
-            break;
-        case UP:
-            /* Move up. Discrease Y value. */
-            g_UsbDeviceHidMouse.buffer[1] = 0U;
-            g_UsbDeviceHidMouse.buffer[2] = (uint8_t)(-2);
-            y--;
-            if (y < 2U)
-            {
-                dir = RIGHT;
-            }
-            break;
-        default:
-            break;
-    }
-    /* Send mouse report to the host */
-    return USB_DeviceHidSend(g_UsbDeviceHidMouse.hidHandle, USB_HID_MOUSE_ENDPOINT_IN, g_UsbDeviceHidMouse.buffer,
-                             USB_HID_MOUSE_REPORT_LENGTH);
+gpio_pin_config_t pin_config_output =
+{
+	kGPIO_DigitalOutput,
+	0
+};
+
+#define Port_LEDgreen	PORTB
+#define GPIO_LEDgreen	GPIOB
+#define Pin_LEDgreen	18
+#define Port_LEDred		PORTC
+#define GPIO_LEDred		GPIOC
+#define Pin_LEDred		14
+#define Port_PTT		PORTA
+#define GPIO_PTT		GPIOA
+#define Pin_PTT			1
+#define Port_SK1		PORTB
+#define GPIO_SK1		GPIOB
+#define Pin_SK1			1
+#define Port_SK2		PORTB
+#define GPIO_SK2		GPIOB
+#define Pin_SK2			9
+
+void init_GD77()
+{
+    CLOCK_EnableClock(kCLOCK_PortA);
+    CLOCK_EnableClock(kCLOCK_PortB);
+    CLOCK_EnableClock(kCLOCK_PortC);
+
+    PORT_SetPinMux(Port_LEDgreen, Pin_LEDgreen, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_LEDred, Pin_LEDred, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_PTT, Pin_PTT, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_SK1, Pin_SK1, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_SK2, Pin_SK2, kPORT_MuxAsGpio);
+
+    GPIO_PinInit(GPIO_LEDgreen, Pin_LEDgreen, &pin_config_output);
+    GPIO_PinInit(GPIO_LEDred, Pin_LEDred, &pin_config_output);
+    GPIO_PinInit(GPIO_PTT, Pin_PTT, &pin_config_input);
+    GPIO_PinInit(GPIO_SK1, Pin_SK1, &pin_config_input);
+    GPIO_PinInit(GPIO_SK2, Pin_SK2, &pin_config_input);
 }
+
+static int state = 0;
+static int state_cmd = 0;
 
 /* The hid class callback */
 static usb_status_t USB_DeviceHidMouseCallback(class_handle_t handle, uint32_t event, void *param)
@@ -196,18 +183,75 @@ static usb_status_t USB_DeviceHidMouseCallback(class_handle_t handle, uint32_t e
                 {
                     return error;
                 }
-                //error = USB_DeviceHidMouseAction();
             }
             break;
         case kUSB_DeviceHidEventGetReport:
             break;
         case kUSB_DeviceHidEventSetReport:
-        	g_UsbDeviceHidMouse.buffer[0]=0x03;
-            for (int i=0; i<32; i++)
-            {
-            	g_UsbDeviceHidMouse.buffer[i+4]=255-g_UsbDeviceHidMouse.buffer[i+4];
-            }
-            error = USB_DeviceHidSend(g_UsbDeviceHidMouse.hidHandle, USB_HID_MOUSE_ENDPOINT_IN, g_UsbDeviceHidMouse.buffer, USB_HID_MOUSE_REPORT_LENGTH);
+        	switch (state)
+        	{
+        		case 0:
+					if ((g_UsbDeviceHidMouse.buffer[4]=='C') && (g_UsbDeviceHidMouse.buffer[5]=='M') && (g_UsbDeviceHidMouse.buffer[6]=='D'))
+					{
+						state_cmd=g_UsbDeviceHidMouse.buffer[7];
+						state=1;
+    		        	g_UsbDeviceHidMouse.buffer[0]=0x03;
+    		        	g_UsbDeviceHidMouse.buffer[1]=0;
+    		        	g_UsbDeviceHidMouse.buffer[2]=1;
+    		        	g_UsbDeviceHidMouse.buffer[3]=0;
+						g_UsbDeviceHidMouse.buffer[4]='A';
+						USB_DeviceHidSend(g_UsbDeviceHidMouse.hidHandle, USB_HID_MOUSE_ENDPOINT_IN, g_UsbDeviceHidMouse.buffer, USB_HID_MOUSE_REPORT_LENGTH);
+					}
+					break;
+        		case 1:
+        			switch (state_cmd)
+        			{
+        				case 1:
+        		            for (int i=0; i<32; i++)
+        		            {
+        		            	g_UsbDeviceHidMouse.buffer[i+4]=255-g_UsbDeviceHidMouse.buffer[i+4];
+        		            }
+        		        	g_UsbDeviceHidMouse.buffer[0]=0x03;
+        		            error = USB_DeviceHidSend(g_UsbDeviceHidMouse.hidHandle, USB_HID_MOUSE_ENDPOINT_IN, g_UsbDeviceHidMouse.buffer, USB_HID_MOUSE_REPORT_LENGTH);
+        					break;
+        				case 2:
+        					if ((g_UsbDeviceHidMouse.buffer[4] & 0x01)!=0)
+        					{
+        						GPIO_PinWrite(GPIO_LEDgreen, Pin_LEDgreen, 1);
+        					}
+        					else
+        					{
+        						GPIO_PinWrite(GPIO_LEDgreen, Pin_LEDgreen, 0);
+        					}
+        					if ((g_UsbDeviceHidMouse.buffer[4] & 0x02)!=0)
+        					{
+        						GPIO_PinWrite(GPIO_LEDred, Pin_LEDred, 1);
+        					}
+        					else
+        					{
+        						GPIO_PinWrite(GPIO_LEDred, Pin_LEDred, 0);
+        					}
+        		        	g_UsbDeviceHidMouse.buffer[4]=0;
+        		        	if (GPIO_PinRead(GPIO_PTT, Pin_PTT)==0)
+        		        	{
+        		        		g_UsbDeviceHidMouse.buffer[4]|=0x01;
+        		        	}
+        		        	if (GPIO_PinRead(GPIO_SK1, Pin_SK1)==0)
+        		        	{
+        		        		g_UsbDeviceHidMouse.buffer[4]|=0x02;
+        		        	}
+        		        	if (GPIO_PinRead(GPIO_SK2, Pin_SK2)==0)
+        		        	{
+        		        		g_UsbDeviceHidMouse.buffer[4]|=0x04;
+        		        	}
+        		        	g_UsbDeviceHidMouse.buffer[0]=0x03;
+        		            error = USB_DeviceHidSend(g_UsbDeviceHidMouse.hidHandle, USB_HID_MOUSE_ENDPOINT_IN, g_UsbDeviceHidMouse.buffer, USB_HID_MOUSE_REPORT_LENGTH);
+        					break;
+        			}
+					state=0;
+					state_cmd=0;
+					break;
+        	}
             break;
         case kUSB_DeviceHidEventRequestReportBuffer:
             if (g_UsbDeviceHidMouse.attach)
@@ -302,7 +346,6 @@ static usb_status_t USB_DeviceCallback(usb_device_handle handle, uint32_t event,
                 /* Set device configuration request */
                 g_UsbDeviceHidMouse.attach = 1U;
                 g_UsbDeviceHidMouse.currentConfiguration = *temp8;
-                //error = USB_DeviceHidMouseAction();
             }
             else
             {
@@ -318,10 +361,6 @@ static usb_status_t USB_DeviceCallback(usb_device_handle handle, uint32_t event,
                 if (interface < USB_HID_MOUSE_INTERFACE_COUNT)
                 {
                     g_UsbDeviceHidMouse.currentInterfaceAlternateSetting[interface] = alternateSetting;
-                    //if (alternateSetting == 0U)
-                    //{
-                    //    error = USB_DeviceHidMouseAction();
-                    //}
                 }
             }
             break;
@@ -613,6 +652,8 @@ void main(void)
     BOARD_InitPins();
     BOARD_BootClockHSRUN();
     BOARD_InitDebugConsole();
+
+    init_GD77();
 
     if (xTaskCreate(APP_task,                                  /* pointer to the task */
                     "app task",                                /* task name for kernel awareness debugging */

@@ -17,10 +17,3 @@ regular GD-77 updater can get created.
 The new firmware is based on the KSDK 2.5.0 FreeRTOS HID mouse device example
 and got patched in a way to resemble the way the original GD-77 firmware was
 created from the KSDK 1.X MQX HID mouse device example as much as possible.
-
-
-Currently it starts up the FreeRTOS context and acts as a USB HID device listening
-for some communication to directly sent back. It sticks to the same communication
-design that the original GD-77 firmware is using. The updated flashmanager is able to
-communicate with the firmware (loop of [send, receive, check] when "Read" is used
-with "Test USB" checked) as a test client.
