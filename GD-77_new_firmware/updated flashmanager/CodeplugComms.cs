@@ -89,19 +89,15 @@ internal class CodeplugComms
 	{
 		if (this.setIsRead())
 		{
-			if ((!MainForm.readInternalFlash) && (!MainForm.usbCommTest))
+			if (!MainForm.readInternalFlash)
 			{
 				this.thread = new Thread(this.readData);
 			}
-			else if (MainForm.readInternalFlash)
+			else
 			{
 				MessageBox.Show("Reading from the internal flash will only work if the properly patched flash readout firmware has already been uploaded!");
 				this.thread = new Thread(this.readDataFlash);
 			}
-            else if (MainForm.usbCommTest)
-            {
-                this.thread = new Thread(this.usbCommTest);
-            }
         }
         else
 		{
@@ -115,87 +111,6 @@ internal class CodeplugComms
 		string hex = BitConverter.ToString(ba);
 		return hex.Replace("-", "");
 	}
-
-    public void usbCommTest()
-    {
-        byte[] usbBuf = new byte[160];// buffer for individual transfers
-        SpecifiedDevice specifiedDevice = null;
-        try
-        {
-            specifiedDevice = SpecifiedDevice.FindSpecifiedDevice(HID_VID, HID_PID);//0x152A HID_PID
-            if (specifiedDevice == null)
-            {
-                if (this.OnFirmwareUpdateProgress != null)
-                {
-                    this.OnFirmwareUpdateProgress(this, new FirmwareUpdateProgressEventArgs(0f, "Device not found", true, true));
-                }
-            }
-            else
-            {
-                for (int cnt=0; cnt<4000; cnt++)
-                {
-                    byte[] buffer = new byte[32];
-                    for (int i = 0; i < 32; i++)
-                    {
-                        buffer[i] = (byte)i;
-                    }
-
-                    specifiedDevice.SendData(buffer);
-                    Array.Clear(usbBuf, 0, usbBuf.Length);
-                    specifiedDevice.ReceiveData(usbBuf);
-
-                    bool error = false;
-                    for (int i = 0; i < 32; i++)
-                    {
-                        if (usbBuf[i] != 255 - i)
-                        {
-                            error = true;
-                            break;
-                        }
-                    }
-
-                    if (error)
-                    {
-                        if (this.OnFirmwareUpdateProgress != null)
-                        {
-                            this.OnFirmwareUpdateProgress(this, new FirmwareUpdateProgressEventArgs(0f, "Received data does not match", true, true));
-                        }
-                        break;
-                    }
-
-                    if (this.OnFirmwareUpdateProgress != null)
-                    {
-                        this.OnFirmwareUpdateProgress(this, new FirmwareUpdateProgressEventArgs((float)(cnt+1) * 100 / (float)4000, "", false, false));
-                    }
-
-                    if (getCancelComm())
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-        catch (TimeoutException ex)
-        {
-            Console.WriteLine(ex.Message);
-            if (this.OnFirmwareUpdateProgress != null)
-            {
-                this.OnFirmwareUpdateProgress(this, new FirmwareUpdateProgressEventArgs(0f, "Comms error", true, true));
-            }
-        }
-        finally
-        {
-            if (specifiedDevice != null)
-            {
-                specifiedDevice.Dispose();
-            }
-        }
-
-        if (this.OnFirmwareUpdateProgress != null)
-        {
-            this.OnFirmwareUpdateProgress(this, new FirmwareUpdateProgressEventArgs(100f, "", false, true));
-        }
-    }
 
     public void readDataFlash()
 	{

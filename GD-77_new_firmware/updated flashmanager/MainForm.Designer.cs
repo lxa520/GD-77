@@ -55,6 +55,7 @@ namespace GD77_FlashManager
             this.writeFlashToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.livedisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.calibrationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.readFromRadioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.adjustSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,7 +64,6 @@ namespace GD77_FlashManager
             this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.creditsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkBoxReadInternalFlash = new System.Windows.Forms.CheckBox();
-            this.checkBoxTestUSB = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -191,6 +191,7 @@ namespace GD77_FlashManager
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem1,
+            this.livedisplayToolStripMenuItem,
             this.calibrationToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -274,6 +275,13 @@ namespace GD77_FlashManager
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
+            // livedisplayToolStripMenuItem
+            // 
+            this.livedisplayToolStripMenuItem.Name = "livedisplayToolStripMenuItem";
+            this.livedisplayToolStripMenuItem.Size = new System.Drawing.Size(77, 20);
+            this.livedisplayToolStripMenuItem.Text = "Livedisplay";
+            this.livedisplayToolStripMenuItem.Click += new System.EventHandler(this.livedisplayToolStripMenuItem_Click);
+            // 
             // calibrationToolStripMenuItem
             // 
             this.calibrationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -338,24 +346,11 @@ namespace GD77_FlashManager
             this.checkBoxReadInternalFlash.Text = "Read\r\ninternal Flash";
             this.checkBoxReadInternalFlash.UseVisualStyleBackColor = true;
             // 
-            // checkBoxTestUSB
-            // 
-            this.checkBoxTestUSB.AutoSize = true;
-            this.checkBoxTestUSB.Checked = true;
-            this.checkBoxTestUSB.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxTestUSB.Location = new System.Drawing.Point(21, 300);
-            this.checkBoxTestUSB.Name = "checkBoxTestUSB";
-            this.checkBoxTestUSB.Size = new System.Drawing.Size(72, 17);
-            this.checkBoxTestUSB.TabIndex = 8;
-            this.checkBoxTestUSB.Text = "Test USB";
-            this.checkBoxTestUSB.UseVisualStyleBackColor = true;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(797, 633);
-            this.Controls.Add(this.checkBoxTestUSB);
             this.Controls.Add(this.checkBoxReadInternalFlash);
             this.Controls.Add(this.txtLen);
             this.Controls.Add(this.label2);
@@ -418,7 +413,7 @@ namespace GD77_FlashManager
 		private ToolStripSeparator toolStripSeparator2;
 		private ToolStripMenuItem mergeToolStripMenuItem;
 		private CheckBox checkBoxReadInternalFlash;
-        private CheckBox checkBoxTestUSB;
+        private ToolStripMenuItem livedisplayToolStripMenuItem;
     }
 }
 

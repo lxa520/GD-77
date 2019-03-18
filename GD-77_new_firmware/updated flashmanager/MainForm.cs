@@ -19,7 +19,6 @@ namespace GD77_FlashManager
 		public static int startAddress;
 		public static int transferLength;
 		public static bool readInternalFlash;
-        public static bool usbCommTest;
         private FixedByteProvider _dbp;
 		private bool _hexboxHasChanged = false;
 		FindOptions	_findOptions; 
@@ -50,7 +49,6 @@ namespace GD77_FlashManager
 			commPrgForm.StartPosition = FormStartPosition.CenterParent;
 			commPrgForm.IsRead = true;
 			MainForm.readInternalFlash = checkBoxReadInternalFlash.Checked;
-            MainForm.usbCommTest = checkBoxTestUSB.Checked;
             MainForm.startAddress = int.Parse(txtStartAddr.Text, System.Globalization.NumberStyles.HexNumber);
 			if (MainForm.startAddress % 32 != 0)
 			{
@@ -377,5 +375,10 @@ namespace GD77_FlashManager
 			mergeFile();
 		}
 
-	}
+        private void livedisplayToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            GD77_livedisplay livedisplay = new GD77_livedisplay();
+            livedisplay.ShowDialog();
+        }
+    }
 }
