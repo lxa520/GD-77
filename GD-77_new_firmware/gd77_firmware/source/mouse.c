@@ -144,6 +144,9 @@ gpio_pin_config_t pin_config_output =
 #define Port_SK2		PORTB
 #define GPIO_SK2		GPIOB
 #define Pin_SK2			9
+#define Port_Orange		PORTA
+#define GPIO_Orange		GPIOA
+#define Pin_Orange		2
 
 void init_GD77()
 {
@@ -156,12 +159,14 @@ void init_GD77()
     PORT_SetPinMux(Port_PTT, Pin_PTT, kPORT_MuxAsGpio);
     PORT_SetPinMux(Port_SK1, Pin_SK1, kPORT_MuxAsGpio);
     PORT_SetPinMux(Port_SK2, Pin_SK2, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_Orange, Pin_Orange, kPORT_MuxAsGpio);
 
     GPIO_PinInit(GPIO_LEDgreen, Pin_LEDgreen, &pin_config_output);
     GPIO_PinInit(GPIO_LEDred, Pin_LEDred, &pin_config_output);
     GPIO_PinInit(GPIO_PTT, Pin_PTT, &pin_config_input);
     GPIO_PinInit(GPIO_SK1, Pin_SK1, &pin_config_input);
     GPIO_PinInit(GPIO_SK2, Pin_SK2, &pin_config_input);
+    GPIO_PinInit(GPIO_Orange, Pin_Orange, &pin_config_input);
 }
 
 static int state = 0;
@@ -243,6 +248,10 @@ static usb_status_t USB_DeviceHidMouseCallback(class_handle_t handle, uint32_t e
         		        	if (GPIO_PinRead(GPIO_SK2, Pin_SK2)==0)
         		        	{
         		        		g_UsbDeviceHidMouse.buffer[4]|=0x04;
+        		        	}
+        		        	if (GPIO_PinRead(GPIO_Orange, Pin_Orange)==0)
+        		        	{
+        		        		g_UsbDeviceHidMouse.buffer[4]|=0x08;
         		        	}
         		        	g_UsbDeviceHidMouse.buffer[0]=0x03;
         		            error = USB_DeviceHidSend(g_UsbDeviceHidMouse.hidHandle, USB_HID_MOUSE_ENDPOINT_IN, g_UsbDeviceHidMouse.buffer, USB_HID_MOUSE_REPORT_LENGTH);

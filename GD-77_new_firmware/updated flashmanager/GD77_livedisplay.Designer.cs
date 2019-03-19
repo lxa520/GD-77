@@ -37,6 +37,7 @@
             this.checkBoxPTT = new System.Windows.Forms.CheckBox();
             this.checkBoxSK2 = new System.Windows.Forms.CheckBox();
             this.checkBoxSK1 = new System.Windows.Forms.CheckBox();
+            this.checkBoxOrange = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // buttonTestUSB
@@ -130,11 +131,23 @@
             this.checkBoxSK1.Text = "SK1";
             this.checkBoxSK1.UseVisualStyleBackColor = true;
             // 
+            // checkBoxOrange
+            // 
+            this.checkBoxOrange.AutoCheck = false;
+            this.checkBoxOrange.AutoSize = true;
+            this.checkBoxOrange.Location = new System.Drawing.Point(204, 85);
+            this.checkBoxOrange.Name = "checkBoxOrange";
+            this.checkBoxOrange.Size = new System.Drawing.Size(61, 17);
+            this.checkBoxOrange.TabIndex = 10;
+            this.checkBoxOrange.Text = "Orange";
+            this.checkBoxOrange.UseVisualStyleBackColor = true;
+            // 
             // GD77_livedisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.checkBoxOrange);
             this.Controls.Add(this.checkBoxSK1);
             this.Controls.Add(this.checkBoxSK2);
             this.Controls.Add(this.checkBoxPTT);
@@ -164,5 +177,6 @@
         private System.Windows.Forms.CheckBox checkBoxPTT;
         private System.Windows.Forms.CheckBox checkBoxSK2;
         private System.Windows.Forms.CheckBox checkBoxSK1;
+        private System.Windows.Forms.CheckBox checkBoxOrange;
     }
 }

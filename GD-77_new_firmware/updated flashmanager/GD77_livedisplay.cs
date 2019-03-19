@@ -152,6 +152,7 @@ namespace GD77_FlashManager
                         SetPTT((usbBuf[0] & 0x01) != 0);
                         SetSK1((usbBuf[0] & 0x02) != 0);
                         SetSK2((usbBuf[0] & 0x04) != 0);
+                        SetOrange((usbBuf[0] & 0x08) != 0);
 
                         Thread.Sleep(50);
 
@@ -207,6 +208,14 @@ namespace GD77_FlashManager
             checkBoxSK2.BeginInvoke(new Action(() =>
             {
                 checkBoxSK2.Checked = status;
+            }));
+        }
+
+        private void SetOrange(bool status)
+        {
+            checkBoxOrange.BeginInvoke(new Action(() =>
+            {
+                checkBoxOrange.Checked = status;
             }));
         }
 
