@@ -135,7 +135,7 @@ namespace GD77_FlashManager
                             break;
                         }
 
-                        byte[] buffer = new byte[1] { 0 };
+                        byte[] buffer = new byte[5] { 0, 0, 0, 0, 0 };
                         if (checkBoxLEDgreen.Checked)
                         {
                             buffer[0] |= 0x01;
@@ -149,10 +149,35 @@ namespace GD77_FlashManager
                         Array.Clear(usbBuf, 0, usbBuf.Length);
                         specifiedDevice.ReceiveData(usbBuf);
 
-                        SetPTT((usbBuf[0] & 0x01) != 0);
-                        SetSK1((usbBuf[0] & 0x02) != 0);
-                        SetSK2((usbBuf[0] & 0x04) != 0);
-                        SetOrange((usbBuf[0] & 0x08) != 0);
+                        SetCheckBox(checkBoxPTT, (usbBuf[0] & 0x01) != 0);
+                        SetCheckBox(checkBoxSK1, (usbBuf[0] & 0x02) != 0);
+                        SetCheckBox(checkBoxSK2, (usbBuf[0] & 0x04) != 0);
+                        SetCheckBox(checkBoxOrange, (usbBuf[0] & 0x08) != 0);
+
+                        int keys = (usbBuf[1] << 0) + (usbBuf[2] << 8) + (usbBuf[3] << 16) + (usbBuf[4] << 24);
+
+                        SetCheckBox(checkBoxKey1, (keys & 0x00000001) != 0);
+                        SetCheckBox(checkBoxKey2, (keys & 0x00000002) != 0);
+                        SetCheckBox(checkBoxKey3, (keys & 0x00000004) != 0);
+                        SetCheckBox(checkBoxKeyGreen, (keys & 0x00000008) != 0);
+
+                        SetCheckBox(checkBoxKeyRight, (keys & 0x00000010) != 0);
+                        SetCheckBox(checkBoxKey4, (keys & 0x00000020) != 0);
+                        SetCheckBox(checkBoxKey5, (keys & 0x00000040) != 0);
+                        SetCheckBox(checkBoxKey6, (keys & 0x00000080) != 0);
+
+                        SetCheckBox(checkBoxKeyUp, (keys & 0x00000100) != 0);
+                        SetCheckBox(checkBoxKeyLeft, (keys & 0x00000200) != 0);
+                        SetCheckBox(checkBoxKey7, (keys & 0x00000400) != 0);
+                        SetCheckBox(checkBoxKey8, (keys & 0x00000800) != 0);
+
+                        SetCheckBox(checkBoxKey9, (keys & 0x00001000) != 0);
+                        SetCheckBox(checkBoxKeyDown, (keys & 0x00002000) != 0);
+                        SetCheckBox(checkBoxKeyStar, (keys & 0x00008000) != 0);
+
+                        SetCheckBox(checkBoxKey0, (keys & 0x00010000) != 0);
+                        SetCheckBox(checkBoxKeyHash, (keys & 0x00020000) != 0);
+                        SetCheckBox(checkBoxKeyRed, (keys & 0x00040000) != 0);
 
                         Thread.Sleep(50);
 
@@ -187,35 +212,11 @@ namespace GD77_FlashManager
             }));
         }
 
-        private void SetPTT(bool status)
+        private void SetCheckBox(System.Windows.Forms.CheckBox cb, bool status)
         {
-            checkBoxPTT.BeginInvoke(new Action(() =>
+            cb.BeginInvoke(new Action(() =>
             {
-                checkBoxPTT.Checked = status;
-            }));
-        }
-
-        private void SetSK1(bool status)
-        {
-            checkBoxSK1.BeginInvoke(new Action(() =>
-            {
-                checkBoxSK1.Checked = status;
-            }));
-        }
-
-        private void SetSK2(bool status)
-        {
-            checkBoxSK2.BeginInvoke(new Action(() =>
-            {
-                checkBoxSK2.Checked = status;
-            }));
-        }
-
-        private void SetOrange(bool status)
-        {
-            checkBoxOrange.BeginInvoke(new Action(() =>
-            {
-                checkBoxOrange.Checked = status;
+                cb.Checked = status;
             }));
         }
 

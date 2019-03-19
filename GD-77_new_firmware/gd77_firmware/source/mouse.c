@@ -148,6 +148,35 @@ gpio_pin_config_t pin_config_output =
 #define GPIO_Orange		GPIOA
 #define Pin_Orange		2
 
+#define Port_Key_Col0   PORTC
+#define GPIO_Key_Col0 	GPIOC
+#define Pin_Key_Col0	0
+#define Port_Key_Col1   PORTC
+#define GPIO_Key_Col1 	GPIOC
+#define Pin_Key_Col1 	1
+#define Port_Key_Col2   PORTC
+#define GPIO_Key_Col2 	GPIOC
+#define Pin_Key_Col2 	2
+#define Port_Key_Col3   PORTC
+#define GPIO_Key_Col3 	GPIOC
+#define Pin_Key_Col3 	3
+
+#define Port_Key_Row0   PORTB
+#define GPIO_Key_Row0 	GPIOB
+#define Pin_Key_Row0	19
+#define Port_Key_Row1   PORTB
+#define GPIO_Key_Row1 	GPIOB
+#define Pin_Key_Row1	20
+#define Port_Key_Row2   PORTB
+#define GPIO_Key_Row2 	GPIOB
+#define Pin_Key_Row2	21
+#define Port_Key_Row3   PORTB
+#define GPIO_Key_Row3 	GPIOB
+#define Pin_Key_Row3	22
+#define Port_Key_Row4   PORTB
+#define GPIO_Key_Row4 	GPIOB
+#define Pin_Key_Row4	23
+
 void init_GD77()
 {
     CLOCK_EnableClock(kCLOCK_PortA);
@@ -161,12 +190,146 @@ void init_GD77()
     PORT_SetPinMux(Port_SK2, Pin_SK2, kPORT_MuxAsGpio);
     PORT_SetPinMux(Port_Orange, Pin_Orange, kPORT_MuxAsGpio);
 
+    PORT_SetPinMux(Port_Key_Col0, Pin_Key_Col0, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_Key_Col1, Pin_Key_Col1, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_Key_Col2, Pin_Key_Col2, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_Key_Col3, Pin_Key_Col3, kPORT_MuxAsGpio);
+
+    PORT_SetPinMux(Port_Key_Row0, Pin_Key_Row0, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_Key_Row1, Pin_Key_Row1, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_Key_Row2, Pin_Key_Row2, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_Key_Row3, Pin_Key_Row3, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_Key_Row4, Pin_Key_Row4, kPORT_MuxAsGpio);
+
     GPIO_PinInit(GPIO_LEDgreen, Pin_LEDgreen, &pin_config_output);
     GPIO_PinInit(GPIO_LEDred, Pin_LEDred, &pin_config_output);
     GPIO_PinInit(GPIO_PTT, Pin_PTT, &pin_config_input);
     GPIO_PinInit(GPIO_SK1, Pin_SK1, &pin_config_input);
     GPIO_PinInit(GPIO_SK2, Pin_SK2, &pin_config_input);
     GPIO_PinInit(GPIO_Orange, Pin_Orange, &pin_config_input);
+
+    GPIO_PinInit(GPIO_Key_Col0, Pin_Key_Col0, &pin_config_input);
+    GPIO_PinInit(GPIO_Key_Col1, Pin_Key_Col1, &pin_config_input);
+    GPIO_PinInit(GPIO_Key_Col2, Pin_Key_Col2, &pin_config_input);
+    GPIO_PinInit(GPIO_Key_Col3, Pin_Key_Col3, &pin_config_input);
+
+    GPIO_PinInit(GPIO_Key_Row0, Pin_Key_Row0, &pin_config_input);
+    GPIO_PinInit(GPIO_Key_Row1, Pin_Key_Row1, &pin_config_input);
+    GPIO_PinInit(GPIO_Key_Row2, Pin_Key_Row2, &pin_config_input);
+    GPIO_PinInit(GPIO_Key_Row3, Pin_Key_Row3, &pin_config_input);
+    GPIO_PinInit(GPIO_Key_Row4, Pin_Key_Row4, &pin_config_input);
+}
+
+uint8_t read_keyboard_col()
+{
+	uint8_t result=0;
+	if (GPIO_PinRead(GPIO_Key_Row0, Pin_Key_Row0)==0)
+	{
+		result|=0x01;
+	}
+	if (GPIO_PinRead(GPIO_Key_Row1, Pin_Key_Row1)==0)
+	{
+		result|=0x02;
+	}
+	if (GPIO_PinRead(GPIO_Key_Row2, Pin_Key_Row2)==0)
+	{
+		result|=0x04;
+	}
+	if (GPIO_PinRead(GPIO_Key_Row3, Pin_Key_Row3)==0)
+	{
+		result|=0x08;
+	}
+	if (GPIO_PinRead(GPIO_Key_Row4, Pin_Key_Row4)==0)
+	{
+		result|=0x10;
+	}
+	return result;
+}
+
+uint32_t read_keyboard()
+{
+    GPIO_PinInit(GPIO_Key_Col3, Pin_Key_Col3, &pin_config_output);
+	GPIO_PinWrite(GPIO_Key_Col3, Pin_Key_Col3, 0);
+	uint32_t result=read_keyboard_col();
+	GPIO_PinWrite(GPIO_Key_Col3, Pin_Key_Col3, 1);
+    GPIO_PinInit(GPIO_Key_Col3, Pin_Key_Col3, &pin_config_input);
+
+    GPIO_PinInit(GPIO_Key_Col2, Pin_Key_Col2, &pin_config_output);
+	GPIO_PinWrite(GPIO_Key_Col2, Pin_Key_Col2, 0);
+	result=(result<<5)|read_keyboard_col();
+	GPIO_PinWrite(GPIO_Key_Col2, Pin_Key_Col2, 1);
+    GPIO_PinInit(GPIO_Key_Col2, Pin_Key_Col2, &pin_config_input);
+
+    GPIO_PinInit(GPIO_Key_Col1, Pin_Key_Col1, &pin_config_output);
+	GPIO_PinWrite(GPIO_Key_Col1, Pin_Key_Col1, 0);
+	result=(result<<5)|read_keyboard_col();
+	GPIO_PinWrite(GPIO_Key_Col1, Pin_Key_Col1, 1);
+    GPIO_PinInit(GPIO_Key_Col1, Pin_Key_Col1, &pin_config_input);
+
+    GPIO_PinInit(GPIO_Key_Col0, Pin_Key_Col0, &pin_config_output);
+	GPIO_PinWrite(GPIO_Key_Col0, Pin_Key_Col0, 0);
+	result=(result<<5)|read_keyboard_col();
+	GPIO_PinWrite(GPIO_Key_Col0, Pin_Key_Col0, 1);
+    GPIO_PinInit(GPIO_Key_Col0, Pin_Key_Col0, &pin_config_input);
+
+    return result;
+}
+
+uint8_t LED_to_device = 0x00;
+uint8_t Button_from_device = 0x00;
+uint32_t Keyboard_from_device = 0x00000000;
+
+void IO_task(void *handle)
+{
+	while(1)
+	{
+		taskENTER_CRITICAL();
+		uint8_t LED_to_device_TMP = LED_to_device;
+		taskEXIT_CRITICAL();
+
+		if ((LED_to_device_TMP & 0x01)!=0)
+		{
+			GPIO_PinWrite(GPIO_LEDgreen, Pin_LEDgreen, 1);
+		}
+		else
+		{
+			GPIO_PinWrite(GPIO_LEDgreen, Pin_LEDgreen, 0);
+		}
+		if ((LED_to_device_TMP & 0x02)!=0)
+		{
+			GPIO_PinWrite(GPIO_LEDred, Pin_LEDred, 1);
+		}
+		else
+		{
+			GPIO_PinWrite(GPIO_LEDred, Pin_LEDred, 0);
+		}
+
+		uint8_t Button_from_device_TMP=0;
+    	if (GPIO_PinRead(GPIO_PTT, Pin_PTT)==0)
+    	{
+    		Button_from_device_TMP|=0x01;
+    	}
+    	if (GPIO_PinRead(GPIO_SK1, Pin_SK1)==0)
+    	{
+    		Button_from_device_TMP|=0x02;
+    	}
+    	if (GPIO_PinRead(GPIO_SK2, Pin_SK2)==0)
+    	{
+    		Button_from_device_TMP|=0x04;
+    	}
+    	if (GPIO_PinRead(GPIO_Orange, Pin_Orange)==0)
+    	{
+    		Button_from_device_TMP|=0x08;
+    	}
+    	uint32_t Keyboard_from_device_TMP = read_keyboard();
+
+		taskENTER_CRITICAL();
+		Button_from_device=Button_from_device_TMP;
+		Keyboard_from_device=Keyboard_from_device_TMP;
+		taskEXIT_CRITICAL();
+
+		vTaskDelay(portTICK_PERIOD_MS);
+	}
 }
 
 static int state = 0;
@@ -220,39 +383,12 @@ static usb_status_t USB_DeviceHidMouseCallback(class_handle_t handle, uint32_t e
         		            error = USB_DeviceHidSend(g_UsbDeviceHidMouse.hidHandle, USB_HID_MOUSE_ENDPOINT_IN, g_UsbDeviceHidMouse.buffer, USB_HID_MOUSE_REPORT_LENGTH);
         					break;
         				case 2:
-        					if ((g_UsbDeviceHidMouse.buffer[4] & 0x01)!=0)
-        					{
-        						GPIO_PinWrite(GPIO_LEDgreen, Pin_LEDgreen, 1);
-        					}
-        					else
-        					{
-        						GPIO_PinWrite(GPIO_LEDgreen, Pin_LEDgreen, 0);
-        					}
-        					if ((g_UsbDeviceHidMouse.buffer[4] & 0x02)!=0)
-        					{
-        						GPIO_PinWrite(GPIO_LEDred, Pin_LEDred, 1);
-        					}
-        					else
-        					{
-        						GPIO_PinWrite(GPIO_LEDred, Pin_LEDred, 0);
-        					}
-        		        	g_UsbDeviceHidMouse.buffer[4]=0;
-        		        	if (GPIO_PinRead(GPIO_PTT, Pin_PTT)==0)
-        		        	{
-        		        		g_UsbDeviceHidMouse.buffer[4]|=0x01;
-        		        	}
-        		        	if (GPIO_PinRead(GPIO_SK1, Pin_SK1)==0)
-        		        	{
-        		        		g_UsbDeviceHidMouse.buffer[4]|=0x02;
-        		        	}
-        		        	if (GPIO_PinRead(GPIO_SK2, Pin_SK2)==0)
-        		        	{
-        		        		g_UsbDeviceHidMouse.buffer[4]|=0x04;
-        		        	}
-        		        	if (GPIO_PinRead(GPIO_Orange, Pin_Orange)==0)
-        		        	{
-        		        		g_UsbDeviceHidMouse.buffer[4]|=0x08;
-        		        	}
+							LED_to_device=g_UsbDeviceHidMouse.buffer[4];
+							g_UsbDeviceHidMouse.buffer[4]=Button_from_device;
+    		        		g_UsbDeviceHidMouse.buffer[5]=(Keyboard_from_device & 0x000000ff)>>0;
+    		        		g_UsbDeviceHidMouse.buffer[6]=(Keyboard_from_device & 0x0000ff00)>>8;
+    		        		g_UsbDeviceHidMouse.buffer[7]=(Keyboard_from_device & 0x00ff0000)>>16;
+    		        		g_UsbDeviceHidMouse.buffer[8]=(Keyboard_from_device & 0xff000000)>>24;
         		        	g_UsbDeviceHidMouse.buffer[0]=0x03;
         		            error = USB_DeviceHidSend(g_UsbDeviceHidMouse.hidHandle, USB_HID_MOUSE_ENDPOINT_IN, g_UsbDeviceHidMouse.buffer, USB_HID_MOUSE_REPORT_LENGTH);
         					break;
@@ -673,6 +809,22 @@ void main(void)
                     ) != pdPASS)
     {
         usb_echo("app task create failed!\r\n");
+#if (defined(__CC_ARM) || (defined(__ARMCC_VERSION)) || defined(__GNUC__))
+        return 1U;
+#else
+        return;
+#endif
+    }
+
+    if (xTaskCreate(IO_task,                                  /* pointer to the task */
+                    "IO task",                                /* task name for kernel awareness debugging */
+                    5000L / sizeof(portSTACK_TYPE),            /* task stack size */
+                    &g_UsbDeviceHidMouse,                      /* optional task startup argument */
+                    5U,                                        /* initial priority */
+                    &g_UsbDeviceHidMouse.IOTaskHandle /* optional task handle to create */
+                    ) != pdPASS)
+    {
+        usb_echo("IO task create failed!\r\n");
 #if (defined(__CC_ARM) || (defined(__ARMCC_VERSION)) || defined(__GNUC__))
         return 1U;
 #else
