@@ -279,9 +279,9 @@ uint8_t LED_to_device = 0x00;
 uint8_t Button_from_device = 0x00;
 uint32_t Keyboard_from_device = 0x00000000;
 
-void IO_task(void *handle)
+void IO_task()
 {
-	while(1)
+	while(1U)
 	{
 		taskENTER_CRITICAL();
 		uint8_t LED_to_device_TMP = LED_to_device;
@@ -709,6 +709,20 @@ void APP_task(void *handle)
 {
     USB_DeviceApplicationInit();
 
+    init_GD77();
+
+    if (xTaskCreate(IO_task,                                  /* pointer to the task */
+                    "IO task",                                /* task name for kernel awareness debugging */
+                    5000L / sizeof(portSTACK_TYPE),            /* task stack size */
+                    NULL,                      /* optional task startup argument */
+                    5U,                                        /* initial priority */
+                    &g_UsbDeviceHidMouse.IOTaskHandle /* optional task handle to create */
+                    ) != pdPASS)
+    {
+        usb_echo("IO task create failed!\r\n");
+        return;
+    }
+
 #if USB_DEVICE_CONFIG_USE_TASK
     if (g_UsbDeviceHidMouse.deviceHandle)
     {
@@ -798,8 +812,6 @@ void main(void)
     BOARD_BootClockHSRUN();
     BOARD_InitDebugConsole();
 
-    init_GD77();
-
     if (xTaskCreate(APP_task,                                  /* pointer to the task */
                     "app task",                                /* task name for kernel awareness debugging */
                     5000L / sizeof(portSTACK_TYPE),            /* task stack size */
@@ -809,22 +821,6 @@ void main(void)
                     ) != pdPASS)
     {
         usb_echo("app task create failed!\r\n");
-#if (defined(__CC_ARM) || (defined(__ARMCC_VERSION)) || defined(__GNUC__))
-        return 1U;
-#else
-        return;
-#endif
-    }
-
-    if (xTaskCreate(IO_task,                                  /* pointer to the task */
-                    "IO task",                                /* task name for kernel awareness debugging */
-                    5000L / sizeof(portSTACK_TYPE),            /* task stack size */
-                    &g_UsbDeviceHidMouse,                      /* optional task startup argument */
-                    5U,                                        /* initial priority */
-                    &g_UsbDeviceHidMouse.IOTaskHandle /* optional task handle to create */
-                    ) != pdPASS)
-    {
-        usb_echo("IO task create failed!\r\n");
 #if (defined(__CC_ARM) || (defined(__ARMCC_VERSION)) || defined(__GNUC__))
         return 1U;
 #else
