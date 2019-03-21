@@ -56,6 +56,10 @@
             this.checkBoxKey9 = new System.Windows.Forms.CheckBox();
             this.checkBoxKey8 = new System.Windows.Forms.CheckBox();
             this.checkBoxKey7 = new System.Windows.Forms.CheckBox();
+            this.checkBoxDisplayLight = new System.Windows.Forms.CheckBox();
+            this.checkBoxClearDisplay = new System.Windows.Forms.CheckBox();
+            this.checkBoxDisplayTest1 = new System.Windows.Forms.CheckBox();
+            this.checkBoxDisplayTest2 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // buttonTestUSB
@@ -358,11 +362,55 @@
             this.checkBoxKey7.Text = "7";
             this.checkBoxKey7.UseVisualStyleBackColor = true;
             // 
+            // checkBoxDisplayLight
+            // 
+            this.checkBoxDisplayLight.AutoSize = true;
+            this.checkBoxDisplayLight.Location = new System.Drawing.Point(107, 62);
+            this.checkBoxDisplayLight.Name = "checkBoxDisplayLight";
+            this.checkBoxDisplayLight.Size = new System.Drawing.Size(82, 17);
+            this.checkBoxDisplayLight.TabIndex = 31;
+            this.checkBoxDisplayLight.Text = "Display light";
+            this.checkBoxDisplayLight.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxClearDisplay
+            // 
+            this.checkBoxClearDisplay.AutoSize = true;
+            this.checkBoxClearDisplay.Location = new System.Drawing.Point(102, 159);
+            this.checkBoxClearDisplay.Name = "checkBoxClearDisplay";
+            this.checkBoxClearDisplay.Size = new System.Drawing.Size(85, 17);
+            this.checkBoxClearDisplay.TabIndex = 32;
+            this.checkBoxClearDisplay.Text = "Clear display";
+            this.checkBoxClearDisplay.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxDisplayTest1
+            // 
+            this.checkBoxDisplayTest1.AutoSize = true;
+            this.checkBoxDisplayTest1.Location = new System.Drawing.Point(102, 182);
+            this.checkBoxDisplayTest1.Name = "checkBoxDisplayTest1";
+            this.checkBoxDisplayTest1.Size = new System.Drawing.Size(89, 17);
+            this.checkBoxDisplayTest1.TabIndex = 33;
+            this.checkBoxDisplayTest1.Text = "Display test 1";
+            this.checkBoxDisplayTest1.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxDisplayTest2
+            // 
+            this.checkBoxDisplayTest2.AutoSize = true;
+            this.checkBoxDisplayTest2.Location = new System.Drawing.Point(102, 205);
+            this.checkBoxDisplayTest2.Name = "checkBoxDisplayTest2";
+            this.checkBoxDisplayTest2.Size = new System.Drawing.Size(89, 17);
+            this.checkBoxDisplayTest2.TabIndex = 34;
+            this.checkBoxDisplayTest2.Text = "Display test 2";
+            this.checkBoxDisplayTest2.UseVisualStyleBackColor = true;
+            // 
             // GD77_livedisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.checkBoxDisplayTest2);
+            this.Controls.Add(this.checkBoxDisplayTest1);
+            this.Controls.Add(this.checkBoxClearDisplay);
+            this.Controls.Add(this.checkBoxDisplayLight);
             this.Controls.Add(this.checkBoxKeyHash);
             this.Controls.Add(this.checkBoxKey9);
             this.Controls.Add(this.checkBoxKey8);
@@ -430,5 +478,9 @@
         private System.Windows.Forms.CheckBox checkBoxKey9;
         private System.Windows.Forms.CheckBox checkBoxKey8;
         private System.Windows.Forms.CheckBox checkBoxKey7;
+        private System.Windows.Forms.CheckBox checkBoxDisplayLight;
+        private System.Windows.Forms.CheckBox checkBoxClearDisplay;
+        private System.Windows.Forms.CheckBox checkBoxDisplayTest1;
+        private System.Windows.Forms.CheckBox checkBoxDisplayTest2;
     }
 }

@@ -31,10 +31,10 @@
 #include "usb_phy.h"
 #endif
 
-#include "fsl_common.h"
-#include "fsl_port.h"
-#include "fsl_gpio.h"
-#include "pin_mux.h"
+#include "port_io_def.h"
+
+#include "UC1701.h"
+
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
@@ -116,66 +116,6 @@ void USB_DeviceTaskFn(void *deviceHandle)
     USB_DeviceKhciTaskFunction(deviceHandle);
 }
 #endif
-
-gpio_pin_config_t pin_config_input =
-{
-	kGPIO_DigitalInput,
-	0
-};
-
-gpio_pin_config_t pin_config_output =
-{
-	kGPIO_DigitalOutput,
-	0
-};
-
-#define Port_LEDgreen	PORTB
-#define GPIO_LEDgreen	GPIOB
-#define Pin_LEDgreen	18
-#define Port_LEDred		PORTC
-#define GPIO_LEDred		GPIOC
-#define Pin_LEDred		14
-#define Port_PTT		PORTA
-#define GPIO_PTT		GPIOA
-#define Pin_PTT			1
-#define Port_SK1		PORTB
-#define GPIO_SK1		GPIOB
-#define Pin_SK1			1
-#define Port_SK2		PORTB
-#define GPIO_SK2		GPIOB
-#define Pin_SK2			9
-#define Port_Orange		PORTA
-#define GPIO_Orange		GPIOA
-#define Pin_Orange		2
-
-#define Port_Key_Col0   PORTC
-#define GPIO_Key_Col0 	GPIOC
-#define Pin_Key_Col0	0
-#define Port_Key_Col1   PORTC
-#define GPIO_Key_Col1 	GPIOC
-#define Pin_Key_Col1 	1
-#define Port_Key_Col2   PORTC
-#define GPIO_Key_Col2 	GPIOC
-#define Pin_Key_Col2 	2
-#define Port_Key_Col3   PORTC
-#define GPIO_Key_Col3 	GPIOC
-#define Pin_Key_Col3 	3
-
-#define Port_Key_Row0   PORTB
-#define GPIO_Key_Row0 	GPIOB
-#define Pin_Key_Row0	19
-#define Port_Key_Row1   PORTB
-#define GPIO_Key_Row1 	GPIOB
-#define Pin_Key_Row1	20
-#define Port_Key_Row2   PORTB
-#define GPIO_Key_Row2 	GPIOB
-#define Pin_Key_Row2	21
-#define Port_Key_Row3   PORTB
-#define GPIO_Key_Row3 	GPIOB
-#define Pin_Key_Row3	22
-#define Port_Key_Row4   PORTB
-#define GPIO_Key_Row4 	GPIOB
-#define Pin_Key_Row4	23
 
 void init_GD77()
 {
@@ -303,6 +243,14 @@ void IO_task()
 		{
 			GPIO_PinWrite(GPIO_LEDred, Pin_LEDred, 0);
 		}
+		if ((LED_to_device_TMP & 0x04)!=0)
+		{
+			GPIO_PinWrite(GPIO_Display_Light, Pin_Display_Light, 1);
+		}
+		else
+		{
+			GPIO_PinWrite(GPIO_Display_Light, Pin_Display_Light, 0);
+		}
 
 		uint8_t Button_from_device_TMP=0;
     	if (GPIO_PinRead(GPIO_PTT, Pin_PTT)==0)
@@ -327,6 +275,41 @@ void IO_task()
 		Button_from_device=Button_from_device_TMP;
 		Keyboard_from_device=Keyboard_from_device_TMP;
 		taskEXIT_CRITICAL();
+
+		vTaskDelay(portTICK_PERIOD_MS);
+	}
+}
+
+uint8_t Device_CMD = 0;
+uint8_t Device_buffer[128];
+
+void Display_task()
+{
+	while(1U)
+	{
+		taskENTER_CRITICAL();
+		uint8_t Device_CMD_tmp=Device_CMD;
+		Device_CMD=0;
+		uint8_t Device_buffer_tmp[128];
+		memcpy(Device_buffer_tmp, Device_buffer, sizeof(Device_buffer));
+		taskEXIT_CRITICAL();
+
+		if (Device_CMD_tmp==1)
+		{
+			UC1701_clear();
+		}
+		else if (Device_CMD_tmp==2)
+		{
+		    UC1701_setCursor(Device_buffer_tmp[0],Device_buffer_tmp[1]);
+		}
+		else if (Device_CMD_tmp==3)
+		{
+			UC1701_write(Device_buffer_tmp[0]);
+		}
+		else if (Device_CMD_tmp==4)
+		{
+		    UC1701_print(Device_buffer_tmp);
+		}
 
 		vTaskDelay(portTICK_PERIOD_MS);
 	}
@@ -391,6 +374,19 @@ static usb_status_t USB_DeviceHidMouseCallback(class_handle_t handle, uint32_t e
     		        		g_UsbDeviceHidMouse.buffer[8]=(Keyboard_from_device & 0xff000000)>>24;
         		        	g_UsbDeviceHidMouse.buffer[0]=0x03;
         		            error = USB_DeviceHidSend(g_UsbDeviceHidMouse.hidHandle, USB_HID_MOUSE_ENDPOINT_IN, g_UsbDeviceHidMouse.buffer, USB_HID_MOUSE_REPORT_LENGTH);
+        					break;
+        				case 3:
+        					Device_CMD = g_UsbDeviceHidMouse.buffer[4];
+        					for (int i=0;i<30;i++)
+        					{
+            					Device_buffer[i] = g_UsbDeviceHidMouse.buffer[5 + i];
+        					}
+        		        	g_UsbDeviceHidMouse.buffer[0]=0x03;
+        		        	g_UsbDeviceHidMouse.buffer[1]=0;
+        		        	g_UsbDeviceHidMouse.buffer[2]=1;
+        		        	g_UsbDeviceHidMouse.buffer[3]=0;
+    						g_UsbDeviceHidMouse.buffer[4]='A';
+    						USB_DeviceHidSend(g_UsbDeviceHidMouse.hidHandle, USB_HID_MOUSE_ENDPOINT_IN, g_UsbDeviceHidMouse.buffer, USB_HID_MOUSE_REPORT_LENGTH);
         					break;
         			}
 					state=0;
@@ -710,6 +706,7 @@ void APP_task(void *handle)
     USB_DeviceApplicationInit();
 
     init_GD77();
+    UC1701_begin();
 
     if (xTaskCreate(IO_task,                                  /* pointer to the task */
                     "IO task",                                /* task name for kernel awareness debugging */
@@ -720,6 +717,18 @@ void APP_task(void *handle)
                     ) != pdPASS)
     {
         usb_echo("IO task create failed!\r\n");
+        return;
+    }
+
+    if (xTaskCreate(Display_task,                                  /* pointer to the task */
+                    "Display task",                                /* task name for kernel awareness debugging */
+                    5000L / sizeof(portSTACK_TYPE),            /* task stack size */
+                    NULL,                      /* optional task startup argument */
+                    5U,                                        /* initial priority */
+                    &g_UsbDeviceHidMouse.DisplayTaskHandle /* optional task handle to create */
+                    ) != pdPASS)
+    {
+        usb_echo("Display task create failed!\r\n");
         return;
     }
 

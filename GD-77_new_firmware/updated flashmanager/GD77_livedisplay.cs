@@ -20,6 +20,7 @@ namespace GD77_FlashManager
         private static readonly byte[] CMD_ACK = new byte[1] { (byte)'A' };
         private static readonly byte[] CMD_CMD1 = new byte[4] { (byte)'C', (byte)'M', (byte)'D', 1 };
         private static readonly byte[] CMD_CMD2 = new byte[4] { (byte)'C', (byte)'M', (byte)'D', 2 };
+        private static readonly byte[] CMD_CMD3 = new byte[4] { (byte)'C', (byte)'M', (byte)'D', 3 };
 
         private Thread thread;
 
@@ -107,6 +108,74 @@ namespace GD77_FlashManager
             }
         }
 
+        public bool send_data(SpecifiedDevice specifiedDevice, byte[] senddata)
+        {
+            specifiedDevice.SendData(senddata);
+            byte[] usbBuf = new byte[160];// buffer for individual transfers
+            Array.Clear(usbBuf, 0, usbBuf.Length);
+            specifiedDevice.ReceiveData(usbBuf);// Wait for response
+            if (usbBuf[0] != GD77_livedisplay.CMD_ACK[0])
+            {
+                SetStatusText("USB Livemodus ERROR: No ACK");
+                return false;
+            }
+            return true;
+        }
+
+        public bool display_clear(SpecifiedDevice specifiedDevice)
+        {
+            SetCheckBox(checkBoxClearDisplay, false);
+            if (!send_data(specifiedDevice, GD77_livedisplay.CMD_CMD3))
+                return false;
+            byte[] data = new byte[1] { 1 };
+            if (!send_data(specifiedDevice, data))
+                return false;
+            return true;
+        }
+
+        public bool display_set_cursor(SpecifiedDevice specifiedDevice, byte x, byte y)
+        {
+            SetCheckBox(checkBoxClearDisplay, false);
+            if (!send_data(specifiedDevice, GD77_livedisplay.CMD_CMD3))
+                return false;
+            byte[] data = new byte[3] { 2, x, y };
+            if (!send_data(specifiedDevice, data))
+                return false;
+            return true;
+        }
+
+        public bool display_write(SpecifiedDevice specifiedDevice, char c)
+        {
+            SetCheckBox(checkBoxClearDisplay, false);
+            if (!send_data(specifiedDevice, GD77_livedisplay.CMD_CMD3))
+                return false;
+            byte[] data = new byte[2] { 3, (byte)c };
+            if (!send_data(specifiedDevice, data))
+                return false;
+            return true;
+        }
+
+        public bool display_print(SpecifiedDevice specifiedDevice, String text)
+        {
+            SetCheckBox(checkBoxClearDisplay, false);
+            if (!send_data(specifiedDevice, GD77_livedisplay.CMD_CMD3))
+                return false;
+            byte[] data = new byte[31];
+            data[0] = 4;
+            int i = 0;
+            while (i < 29)
+            {
+                data[i + 1] = (byte)text[i];
+                i++;
+                if (i >= text.Length)
+                    break;
+            }
+            data[i + 1] = 0;
+            if (!send_data(specifiedDevice, data))
+                return false;
+            return true;
+        }
+
         bool usbLivemodusRunning = false;
         bool usbLivemodusStopTask = false;
         public void usbLivemodus()
@@ -144,6 +213,10 @@ namespace GD77_FlashManager
                         {
                             buffer[0] |= 0x02;
                         }
+                        if (checkBoxDisplayLight.Checked)
+                        {
+                            buffer[0] |= 0x04;
+                        }
 
                         specifiedDevice.SendData(buffer);
                         Array.Clear(usbBuf, 0, usbBuf.Length);
@@ -178,6 +251,74 @@ namespace GD77_FlashManager
                         SetCheckBox(checkBoxKey0, (keys & 0x00010000) != 0);
                         SetCheckBox(checkBoxKeyHash, (keys & 0x00020000) != 0);
                         SetCheckBox(checkBoxKeyRed, (keys & 0x00040000) != 0);
+
+                        if (checkBoxClearDisplay.Checked)
+                        {
+                            SetCheckBox(checkBoxClearDisplay, false);
+
+                            if (!display_clear(specifiedDevice))
+                                break;
+                        }
+
+                        if (checkBoxDisplayTest1.Checked)
+                        {
+                            SetCheckBox(checkBoxDisplayTest1, false);
+
+                            if (!display_clear(specifiedDevice))
+                                break;
+
+                            if (!display_set_cursor(specifiedDevice, 24, 1))
+                                break;
+                            if (!display_write(specifiedDevice, 'T'))
+                                break;
+                            if (!display_write(specifiedDevice, 'E'))
+                                break;
+                            if (!display_write(specifiedDevice, 'S'))
+                                break;
+                            if (!display_write(specifiedDevice, 'T'))
+                                break;
+                            if (!display_write(specifiedDevice, '1'))
+                                break;
+
+                            if (!display_set_cursor(specifiedDevice, 24, 2))
+                                break;
+                            if (!display_write(specifiedDevice, 'T'))
+                                break;
+                            if (!display_write(specifiedDevice, 'E'))
+                                break;
+                            if (!display_write(specifiedDevice, 'S'))
+                                break;
+                            if (!display_write(specifiedDevice, 'T'))
+                                break;
+                            if (!display_write(specifiedDevice, '2'))
+                                break;
+
+                            if (!display_set_cursor(specifiedDevice, 24, 4))
+                                break;
+                            if (!display_print(specifiedDevice, "Testtext!"))
+                                break;
+
+                            if (!display_set_cursor(specifiedDevice, 24, 5))
+                                break;
+                            if (!display_print(specifiedDevice, "Hello World!"))
+                                break;
+                        }
+
+                        if (checkBoxDisplayTest2.Checked)
+                        {
+                            SetCheckBox(checkBoxDisplayTest2, false);
+
+                            if (!display_clear(specifiedDevice))
+                                break;
+
+                            for (int i = 0; i < 8; i++)
+                            {
+                                if (!display_set_cursor(specifiedDevice, 0, (byte)i))
+                                    break;
+                                if (!display_print(specifiedDevice, "012345678901234567890"))
+                                    break;
+                            }
+                        }
 
                         Thread.Sleep(50);
 
