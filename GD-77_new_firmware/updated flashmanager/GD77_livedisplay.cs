@@ -195,128 +195,133 @@ namespace GD77_FlashManager
 
                     while (true)
                     {
-                        specifiedDevice.SendData(GD77_livedisplay.CMD_CMD2);
-                        Array.Clear(usbBuf, 0, usbBuf.Length);
-                        specifiedDevice.ReceiveData(usbBuf);// Wait for response
-                        if (usbBuf[0] != GD77_livedisplay.CMD_ACK[0])
+                        if (!checkBoxEnableDisplayTest.Checked)
                         {
-                            SetStatusText("USB Livemodus ERROR: No ACK");
-                            break;
-                        }
-
-                        byte[] buffer = new byte[5] { 0, 0, 0, 0, 0 };
-                        if (checkBoxLEDgreen.Checked)
-                        {
-                            buffer[0] |= 0x01;
-                        }
-                        if (checkBoxLEDred.Checked)
-                        {
-                            buffer[0] |= 0x02;
-                        }
-                        if (checkBoxDisplayLight.Checked)
-                        {
-                            buffer[0] |= 0x04;
-                        }
-
-                        specifiedDevice.SendData(buffer);
-                        Array.Clear(usbBuf, 0, usbBuf.Length);
-                        specifiedDevice.ReceiveData(usbBuf);
-
-                        SetCheckBox(checkBoxPTT, (usbBuf[0] & 0x01) != 0);
-                        SetCheckBox(checkBoxSK1, (usbBuf[0] & 0x02) != 0);
-                        SetCheckBox(checkBoxSK2, (usbBuf[0] & 0x04) != 0);
-                        SetCheckBox(checkBoxOrange, (usbBuf[0] & 0x08) != 0);
-
-                        int keys = (usbBuf[1] << 0) + (usbBuf[2] << 8) + (usbBuf[3] << 16) + (usbBuf[4] << 24);
-
-                        SetCheckBox(checkBoxKey1, (keys & 0x00000001) != 0);
-                        SetCheckBox(checkBoxKey2, (keys & 0x00000002) != 0);
-                        SetCheckBox(checkBoxKey3, (keys & 0x00000004) != 0);
-                        SetCheckBox(checkBoxKeyGreen, (keys & 0x00000008) != 0);
-
-                        SetCheckBox(checkBoxKeyRight, (keys & 0x00000010) != 0);
-                        SetCheckBox(checkBoxKey4, (keys & 0x00000020) != 0);
-                        SetCheckBox(checkBoxKey5, (keys & 0x00000040) != 0);
-                        SetCheckBox(checkBoxKey6, (keys & 0x00000080) != 0);
-
-                        SetCheckBox(checkBoxKeyUp, (keys & 0x00000100) != 0);
-                        SetCheckBox(checkBoxKeyLeft, (keys & 0x00000200) != 0);
-                        SetCheckBox(checkBoxKey7, (keys & 0x00000400) != 0);
-                        SetCheckBox(checkBoxKey8, (keys & 0x00000800) != 0);
-
-                        SetCheckBox(checkBoxKey9, (keys & 0x00001000) != 0);
-                        SetCheckBox(checkBoxKeyDown, (keys & 0x00002000) != 0);
-                        SetCheckBox(checkBoxKeyStar, (keys & 0x00008000) != 0);
-
-                        SetCheckBox(checkBoxKey0, (keys & 0x00010000) != 0);
-                        SetCheckBox(checkBoxKeyHash, (keys & 0x00020000) != 0);
-                        SetCheckBox(checkBoxKeyRed, (keys & 0x00040000) != 0);
-
-                        if (checkBoxClearDisplay.Checked)
-                        {
-                            SetCheckBox(checkBoxClearDisplay, false);
-
-                            if (!display_clear(specifiedDevice))
-                                break;
-                        }
-
-                        if (checkBoxDisplayTest1.Checked)
-                        {
-                            SetCheckBox(checkBoxDisplayTest1, false);
-
-                            if (!display_clear(specifiedDevice))
-                                break;
-
-                            if (!display_set_cursor(specifiedDevice, 24, 1))
-                                break;
-                            if (!display_write(specifiedDevice, 'T'))
-                                break;
-                            if (!display_write(specifiedDevice, 'E'))
-                                break;
-                            if (!display_write(specifiedDevice, 'S'))
-                                break;
-                            if (!display_write(specifiedDevice, 'T'))
-                                break;
-                            if (!display_write(specifiedDevice, '1'))
-                                break;
-
-                            if (!display_set_cursor(specifiedDevice, 24, 2))
-                                break;
-                            if (!display_write(specifiedDevice, 'T'))
-                                break;
-                            if (!display_write(specifiedDevice, 'E'))
-                                break;
-                            if (!display_write(specifiedDevice, 'S'))
-                                break;
-                            if (!display_write(specifiedDevice, 'T'))
-                                break;
-                            if (!display_write(specifiedDevice, '2'))
-                                break;
-
-                            if (!display_set_cursor(specifiedDevice, 24, 4))
-                                break;
-                            if (!display_print(specifiedDevice, "Testtext!"))
-                                break;
-
-                            if (!display_set_cursor(specifiedDevice, 24, 5))
-                                break;
-                            if (!display_print(specifiedDevice, "Hello World!"))
-                                break;
-                        }
-
-                        if (checkBoxDisplayTest2.Checked)
-                        {
-                            SetCheckBox(checkBoxDisplayTest2, false);
-
-                            if (!display_clear(specifiedDevice))
-                                break;
-
-                            for (int i = 0; i < 8; i++)
+                            specifiedDevice.SendData(GD77_livedisplay.CMD_CMD2);
+                            Array.Clear(usbBuf, 0, usbBuf.Length);
+                            specifiedDevice.ReceiveData(usbBuf);// Wait for response
+                            if (usbBuf[0] != GD77_livedisplay.CMD_ACK[0])
                             {
-                                if (!display_set_cursor(specifiedDevice, 0, (byte)i))
+                                SetStatusText("USB Livemodus ERROR: No ACK");
+                                break;
+                            }
+
+                            byte[] buffer = new byte[5] { 0, 0, 0, 0, 0 };
+                            if (checkBoxLEDgreen.Checked)
+                            {
+                                buffer[0] |= 0x01;
+                            }
+                            if (checkBoxLEDred.Checked)
+                            {
+                                buffer[0] |= 0x02;
+                            }
+                            if (checkBoxDisplayLight.Checked)
+                            {
+                                buffer[0] |= 0x04;
+                            }
+
+                            specifiedDevice.SendData(buffer);
+                            Array.Clear(usbBuf, 0, usbBuf.Length);
+                            specifiedDevice.ReceiveData(usbBuf);
+
+                            SetCheckBox(checkBoxPTT, (usbBuf[0] & 0x01) != 0);
+                            SetCheckBox(checkBoxSK1, (usbBuf[0] & 0x02) != 0);
+                            SetCheckBox(checkBoxSK2, (usbBuf[0] & 0x04) != 0);
+                            SetCheckBox(checkBoxOrange, (usbBuf[0] & 0x08) != 0);
+
+                            int keys = (usbBuf[1] << 0) + (usbBuf[2] << 8) + (usbBuf[3] << 16) + (usbBuf[4] << 24);
+
+                            SetCheckBox(checkBoxKey1, (keys & 0x00000001) != 0);
+                            SetCheckBox(checkBoxKey2, (keys & 0x00000002) != 0);
+                            SetCheckBox(checkBoxKey3, (keys & 0x00000004) != 0);
+                            SetCheckBox(checkBoxKeyGreen, (keys & 0x00000008) != 0);
+
+                            SetCheckBox(checkBoxKeyRight, (keys & 0x00000010) != 0);
+                            SetCheckBox(checkBoxKey4, (keys & 0x00000020) != 0);
+                            SetCheckBox(checkBoxKey5, (keys & 0x00000040) != 0);
+                            SetCheckBox(checkBoxKey6, (keys & 0x00000080) != 0);
+
+                            SetCheckBox(checkBoxKeyUp, (keys & 0x00000100) != 0);
+                            SetCheckBox(checkBoxKeyLeft, (keys & 0x00000200) != 0);
+                            SetCheckBox(checkBoxKey7, (keys & 0x00000400) != 0);
+                            SetCheckBox(checkBoxKey8, (keys & 0x00000800) != 0);
+
+                            SetCheckBox(checkBoxKey9, (keys & 0x00001000) != 0);
+                            SetCheckBox(checkBoxKeyDown, (keys & 0x00002000) != 0);
+                            SetCheckBox(checkBoxKeyStar, (keys & 0x00008000) != 0);
+
+                            SetCheckBox(checkBoxKey0, (keys & 0x00010000) != 0);
+                            SetCheckBox(checkBoxKeyHash, (keys & 0x00020000) != 0);
+                            SetCheckBox(checkBoxKeyRed, (keys & 0x00040000) != 0);
+                        }
+                        else
+                        {
+                            if (checkBoxClearDisplay.Checked)
+                            {
+                                SetCheckBox(checkBoxClearDisplay, false);
+
+                                if (!display_clear(specifiedDevice))
                                     break;
-                                if (!display_print(specifiedDevice, "012345678901234567890"))
+                            }
+
+                            if (checkBoxDisplayTest1.Checked)
+                            {
+                                SetCheckBox(checkBoxDisplayTest1, false);
+
+                                if (!display_clear(specifiedDevice))
                                     break;
+
+                                if (!display_set_cursor(specifiedDevice, 24, 1))
+                                    break;
+                                if (!display_write(specifiedDevice, 'T'))
+                                    break;
+                                if (!display_write(specifiedDevice, 'E'))
+                                    break;
+                                if (!display_write(specifiedDevice, 'S'))
+                                    break;
+                                if (!display_write(specifiedDevice, 'T'))
+                                    break;
+                                if (!display_write(specifiedDevice, '1'))
+                                    break;
+
+                                if (!display_set_cursor(specifiedDevice, 24, 2))
+                                    break;
+                                if (!display_write(specifiedDevice, 'T'))
+                                    break;
+                                if (!display_write(specifiedDevice, 'E'))
+                                    break;
+                                if (!display_write(specifiedDevice, 'S'))
+                                    break;
+                                if (!display_write(specifiedDevice, 'T'))
+                                    break;
+                                if (!display_write(specifiedDevice, '2'))
+                                    break;
+
+                                if (!display_set_cursor(specifiedDevice, 24, 4))
+                                    break;
+                                if (!display_print(specifiedDevice, "Testtext!"))
+                                    break;
+
+                                if (!display_set_cursor(specifiedDevice, 24, 5))
+                                    break;
+                                if (!display_print(specifiedDevice, "Hello World!"))
+                                    break;
+                            }
+
+                            if (checkBoxDisplayTest2.Checked)
+                            {
+                                SetCheckBox(checkBoxDisplayTest2, false);
+
+                                if (!display_clear(specifiedDevice))
+                                    break;
+
+                                for (int i = 0; i < 8; i++)
+                                {
+                                    if (!display_set_cursor(specifiedDevice, 0, (byte)i))
+                                        break;
+                                    if (!display_print(specifiedDevice, "012345678901234567890"))
+                                        break;
+                                }
                             }
                         }
 

@@ -218,6 +218,7 @@ uint32_t read_keyboard()
 uint8_t LED_to_device = 0x00;
 uint8_t Button_from_device = 0x00;
 uint32_t Keyboard_from_device = 0x00000000;
+bool LED_Touched = false;
 
 void IO_task()
 {
@@ -225,31 +226,36 @@ void IO_task()
 	{
 		taskENTER_CRITICAL();
 		uint8_t LED_to_device_TMP = LED_to_device;
+		bool LED_Touched_tmp = LED_Touched;
+		LED_Touched = false;
 		taskEXIT_CRITICAL();
 
-		if ((LED_to_device_TMP & 0x01)!=0)
+		if (LED_Touched_tmp)
 		{
-			GPIO_PinWrite(GPIO_LEDgreen, Pin_LEDgreen, 1);
-		}
-		else
-		{
-			GPIO_PinWrite(GPIO_LEDgreen, Pin_LEDgreen, 0);
-		}
-		if ((LED_to_device_TMP & 0x02)!=0)
-		{
-			GPIO_PinWrite(GPIO_LEDred, Pin_LEDred, 1);
-		}
-		else
-		{
-			GPIO_PinWrite(GPIO_LEDred, Pin_LEDred, 0);
-		}
-		if ((LED_to_device_TMP & 0x04)!=0)
-		{
-			GPIO_PinWrite(GPIO_Display_Light, Pin_Display_Light, 1);
-		}
-		else
-		{
-			GPIO_PinWrite(GPIO_Display_Light, Pin_Display_Light, 0);
+			if ((LED_to_device_TMP & 0x01)!=0)
+			{
+				GPIO_PinWrite(GPIO_LEDgreen, Pin_LEDgreen, 1);
+			}
+			else
+			{
+				GPIO_PinWrite(GPIO_LEDgreen, Pin_LEDgreen, 0);
+			}
+			if ((LED_to_device_TMP & 0x02)!=0)
+			{
+				GPIO_PinWrite(GPIO_LEDred, Pin_LEDred, 1);
+			}
+			else
+			{
+				GPIO_PinWrite(GPIO_LEDred, Pin_LEDred, 0);
+			}
+			if ((LED_to_device_TMP & 0x04)!=0)
+			{
+				GPIO_PinWrite(GPIO_Display_Light, Pin_Display_Light, 1);
+			}
+			else
+			{
+				GPIO_PinWrite(GPIO_Display_Light, Pin_Display_Light, 0);
+			}
 		}
 
 		uint8_t Button_from_device_TMP=0;
@@ -282,6 +288,8 @@ void IO_task()
 
 uint8_t Device_CMD = 0;
 uint8_t Device_buffer[128];
+int Display_light_Timer = 0;
+bool Display_light_Touched = false;
 
 void Display_task()
 {
@@ -305,10 +313,31 @@ void Display_task()
 		else if (Device_CMD_tmp==3)
 		{
 			UC1701_write(Device_buffer_tmp[0]);
+			Display_light_Touched = true;
 		}
 		else if (Device_CMD_tmp==4)
 		{
 		    UC1701_print(Device_buffer_tmp);
+			Display_light_Touched = true;
+		}
+
+		if (Display_light_Touched)
+		{
+			if (Display_light_Timer==0)
+			{
+				GPIO_PinWrite(GPIO_Display_Light, Pin_Display_Light, 1);
+			}
+			Display_light_Timer = 4000;
+			Display_light_Touched = false;
+		}
+
+		if (Display_light_Timer>0)
+		{
+			Display_light_Timer--;
+			if (Display_light_Timer==0)
+			{
+				GPIO_PinWrite(GPIO_Display_Light, Pin_Display_Light, 0);
+			}
 		}
 
 		vTaskDelay(portTICK_PERIOD_MS);
@@ -367,6 +396,7 @@ static usb_status_t USB_DeviceHidMouseCallback(class_handle_t handle, uint32_t e
         					break;
         				case 2:
 							LED_to_device=g_UsbDeviceHidMouse.buffer[4];
+							LED_Touched = true;
 							g_UsbDeviceHidMouse.buffer[4]=Button_from_device;
     		        		g_UsbDeviceHidMouse.buffer[5]=(Keyboard_from_device & 0x000000ff)>>0;
     		        		g_UsbDeviceHidMouse.buffer[6]=(Keyboard_from_device & 0x0000ff00)>>8;

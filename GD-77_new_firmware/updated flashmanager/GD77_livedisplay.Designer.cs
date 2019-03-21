@@ -60,6 +60,7 @@
             this.checkBoxClearDisplay = new System.Windows.Forms.CheckBox();
             this.checkBoxDisplayTest1 = new System.Windows.Forms.CheckBox();
             this.checkBoxDisplayTest2 = new System.Windows.Forms.CheckBox();
+            this.checkBoxEnableDisplayTest = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // buttonTestUSB
@@ -402,11 +403,22 @@
             this.checkBoxDisplayTest2.Text = "Display test 2";
             this.checkBoxDisplayTest2.UseVisualStyleBackColor = true;
             // 
+            // checkBoxEnableDisplayTest
+            // 
+            this.checkBoxEnableDisplayTest.AutoSize = true;
+            this.checkBoxEnableDisplayTest.Location = new System.Drawing.Point(12, 159);
+            this.checkBoxEnableDisplayTest.Name = "checkBoxEnableDisplayTest";
+            this.checkBoxEnableDisplayTest.Size = new System.Drawing.Size(84, 30);
+            this.checkBoxEnableDisplayTest.TabIndex = 35;
+            this.checkBoxEnableDisplayTest.Text = "Enable\r\nDisplay Test";
+            this.checkBoxEnableDisplayTest.UseVisualStyleBackColor = true;
+            // 
             // GD77_livedisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.checkBoxEnableDisplayTest);
             this.Controls.Add(this.checkBoxDisplayTest2);
             this.Controls.Add(this.checkBoxDisplayTest1);
             this.Controls.Add(this.checkBoxClearDisplay);
@@ -482,5 +494,6 @@
         private System.Windows.Forms.CheckBox checkBoxClearDisplay;
         private System.Windows.Forms.CheckBox checkBoxDisplayTest1;
         private System.Windows.Forms.CheckBox checkBoxDisplayTest2;
+        private System.Windows.Forms.CheckBox checkBoxEnableDisplayTest;
     }
 }
