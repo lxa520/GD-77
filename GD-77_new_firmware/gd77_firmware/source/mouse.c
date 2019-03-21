@@ -290,11 +290,40 @@ uint8_t Device_CMD = 0;
 uint8_t Device_buffer[128];
 int Display_light_Timer = 0;
 bool Display_light_Touched = false;
+bool Show_SplashScreen = false;
+int SplashScreen_Timer = 0;
 
 void Display_task()
 {
+	Show_SplashScreen = true;
+
 	while(1U)
 	{
+		if (Show_SplashScreen)
+		{
+			UC1701_clear();
+			UC1701_setCursor(5*6,1);
+			UC1701_print((unsigned char*)"Experimental");
+			UC1701_setCursor(7*6,2);
+			UC1701_print((unsigned char*)"firmware");
+			UC1701_setCursor(10*6,4);
+			UC1701_print((unsigned char*)"by");
+			UC1701_setCursor(8*6,6);
+			UC1701_print((unsigned char*)"DG4KLU");
+			Display_light_Touched = true;
+			SplashScreen_Timer = 4000;
+			Show_SplashScreen = false;
+		}
+
+		if (SplashScreen_Timer>0)
+		{
+			SplashScreen_Timer--;
+			if (SplashScreen_Timer==0)
+			{
+				UC1701_clear();
+			}
+		}
+
 		taskENTER_CRITICAL();
 		uint8_t Device_CMD_tmp=Device_CMD;
 		Device_CMD=0;
