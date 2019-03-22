@@ -85,4 +85,11 @@ static gpio_pin_config_t pin_config_output =
 #define GPIO_Display_SDA 	GPIOC
 #define Pin_Display_SDA		12
 
+#define Port_OFF_Switch     PORTE
+#define GPIO_OFF_Switch     GPIOE
+#define Pin_OFF_Switch		26
+#define Port_OFF_Toggle     PORTA
+#define GPIO_OFF_Toggle 	GPIOA
+#define Pin_OFF_Toggle		13
+
 #endif /* __PORT_IO_DEF_H__ */

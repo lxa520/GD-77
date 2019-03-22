@@ -122,6 +122,8 @@ void init_GD77()
     CLOCK_EnableClock(kCLOCK_PortA);
     CLOCK_EnableClock(kCLOCK_PortB);
     CLOCK_EnableClock(kCLOCK_PortC);
+    CLOCK_EnableClock(kCLOCK_PortD);
+    CLOCK_EnableClock(kCLOCK_PortE);
 
     PORT_SetPinMux(Port_LEDgreen, Pin_LEDgreen, kPORT_MuxAsGpio);
     PORT_SetPinMux(Port_LEDred, Pin_LEDred, kPORT_MuxAsGpio);
@@ -141,6 +143,9 @@ void init_GD77()
     PORT_SetPinMux(Port_Key_Row3, Pin_Key_Row3, kPORT_MuxAsGpio);
     PORT_SetPinMux(Port_Key_Row4, Pin_Key_Row4, kPORT_MuxAsGpio);
 
+    PORT_SetPinMux(Port_OFF_Switch, Pin_OFF_Switch, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_OFF_Toggle, Pin_OFF_Toggle, kPORT_MuxAsGpio);
+
     GPIO_PinInit(GPIO_LEDgreen, Pin_LEDgreen, &pin_config_output);
     GPIO_PinInit(GPIO_LEDred, Pin_LEDred, &pin_config_output);
     GPIO_PinInit(GPIO_PTT, Pin_PTT, &pin_config_input);
@@ -158,6 +163,13 @@ void init_GD77()
     GPIO_PinInit(GPIO_Key_Row2, Pin_Key_Row2, &pin_config_input);
     GPIO_PinInit(GPIO_Key_Row3, Pin_Key_Row3, &pin_config_input);
     GPIO_PinInit(GPIO_Key_Row4, Pin_Key_Row4, &pin_config_input);
+
+    GPIO_PinInit(GPIO_OFF_Switch, Pin_OFF_Switch, &pin_config_output);
+    GPIO_PinInit(GPIO_OFF_Toggle, Pin_OFF_Toggle, &pin_config_input);
+
+	GPIO_PinWrite(GPIO_OFF_Switch, Pin_OFF_Switch, 1);
+
+    UC1701_begin();
 }
 
 uint8_t read_keyboard_col()
@@ -292,6 +304,40 @@ int Display_light_Timer = 0;
 bool Display_light_Touched = false;
 bool Show_SplashScreen = false;
 int SplashScreen_Timer = 0;
+bool Shutdown = false;
+int Shutdown_Timer = 0;
+
+void show_splashscreen()
+{
+	UC1701_clear();
+	UC1701_setCursor(5*6,1);
+	UC1701_print((unsigned char*)"Experimental");
+	UC1701_setCursor(7*6,2);
+	UC1701_print((unsigned char*)"firmware");
+	UC1701_setCursor(10*6,4);
+	UC1701_print((unsigned char*)"by");
+	UC1701_setCursor(8*6,6);
+	UC1701_print((unsigned char*)"DG4KLU");
+	Display_light_Touched = true;
+}
+
+void show_running()
+{
+	UC1701_clear();
+	UC1701_setCursor(7*6+3,4);
+	UC1701_print((unsigned char*)"RUNNING");
+	Display_light_Touched = true;
+}
+
+void show_poweroff()
+{
+	UC1701_clear();
+	UC1701_setCursor(4*6+3,2);
+	UC1701_print((unsigned char*)"Power off ...");
+	UC1701_setCursor(5*6,4);
+	UC1701_print((unsigned char*)"73 de DG4KLU");
+	Display_light_Touched = true;
+}
 
 void Display_task()
 {
@@ -299,18 +345,36 @@ void Display_task()
 
 	while(1U)
 	{
+    	if ((GPIO_PinRead(GPIO_OFF_Toggle, Pin_OFF_Toggle)!=0) && (!Shutdown))
+    	{
+    		Show_SplashScreen=false;
+    		SplashScreen_Timer=0;
+    		show_poweroff();
+    		Shutdown=true;
+			Shutdown_Timer = 2000;
+    	}
+    	else if ((GPIO_PinRead(GPIO_OFF_Toggle, Pin_OFF_Toggle)==0) && (Shutdown))
+    	{
+			show_running();
+			Shutdown=false;
+			Shutdown_Timer = 0;
+    	}
+
+    	if (Shutdown)
+    	{
+    		if (Shutdown_Timer>0)
+    		{
+    			Shutdown_Timer--;
+    			if (Shutdown_Timer==0)
+    			{
+    				GPIO_PinWrite(GPIO_OFF_Switch, Pin_OFF_Switch, 0);
+    			}
+    		}
+    	}
+
 		if (Show_SplashScreen)
 		{
-			UC1701_clear();
-			UC1701_setCursor(5*6,1);
-			UC1701_print((unsigned char*)"Experimental");
-			UC1701_setCursor(7*6,2);
-			UC1701_print((unsigned char*)"firmware");
-			UC1701_setCursor(10*6,4);
-			UC1701_print((unsigned char*)"by");
-			UC1701_setCursor(8*6,6);
-			UC1701_print((unsigned char*)"DG4KLU");
-			Display_light_Touched = true;
+			show_splashscreen();
 			SplashScreen_Timer = 4000;
 			Show_SplashScreen = false;
 		}
@@ -320,7 +384,7 @@ void Display_task()
 			SplashScreen_Timer--;
 			if (SplashScreen_Timer==0)
 			{
-				UC1701_clear();
+				show_running();
 			}
 		}
 
@@ -765,7 +829,6 @@ void APP_task(void *handle)
     USB_DeviceApplicationInit();
 
     init_GD77();
-    UC1701_begin();
 
     if (xTaskCreate(IO_task,                                  /* pointer to the task */
                     "IO task",                                /* task name for kernel awareness debugging */
