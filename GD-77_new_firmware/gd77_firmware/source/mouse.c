@@ -152,6 +152,54 @@ void init_GD77()
     PORT_SetPinMux(Port_OFF_Switch, Pin_OFF_Switch, kPORT_MuxAsGpio);
     PORT_SetPinMux(Port_OFF_Toggle, Pin_OFF_Toggle, kPORT_MuxAsGpio);
 
+    // I2C to AT24C512 EEPROM & AT1846S
+    PORT_SetPinMux(Port_I2C_SCL, Pin_I2C_SCL, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_I2C_SDA, Pin_I2C_SDA, kPORT_MuxAsGpio);
+
+    // SPI to W25Q80BV 1M flash
+    PORT_SetPinMux(Port_SPI_CS_FLASH, Pin_SPI_CS_FLASH, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_SPI_CLK_FLASH, Pin_SPI_CLK_FLASH, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_SPI_DI_FLASH, Pin_SPI_DI_FLASH, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_SPI_DO_FLASH, Pin_SPI_DO_FLASH, kPORT_MuxAsGpio);
+
+    // SPI to C6000 (C_SPI)
+    PORT_SetPinMux(Port_SPI_CS_C6000_C, Pin_SPI_CS_C6000_C, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_SPI_CLK_C6000_C, Pin_SPI_CLK_C6000_C, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_SPI_DI_C6000_C, Pin_SPI_DI_C6000_C, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_SPI_DO_C6000_C, Pin_SPI_DO_C6000_C, kPORT_MuxAsGpio);
+
+    // SPI to C6000 (V_SPI)
+    PORT_SetPinMux(Port_SPI_CS_C6000_V, Pin_SPI_CS_C6000_V, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_SPI_CLK_C6000_V, Pin_SPI_CLK_C6000_V, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_SPI_DI_C6000_V, Pin_SPI_DI_C6000_V, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_SPI_DO_C6000_V, Pin_SPI_DO_C6000_V, kPORT_MuxAsGpio);
+
+    // SPI to C6000 (U_SPI)
+    PORT_SetPinMux(Port_SPI_CS_C6000_U, Pin_SPI_CS_C6000_U, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_SPI_CLK_C6000_U, Pin_SPI_CLK_C6000_U, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_SPI_DI_C6000_U, Pin_SPI_DI_C6000_U, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_SPI_DO_C6000_U, Pin_SPI_DO_C6000_U, kPORT_MuxAsGpio);
+
+    // C6000 interrupts
+    PORT_SetPinMux(Port_INT_C6000_RF_RX, Pin_INT_C6000_RF_RX, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_INT_C6000_RF_TX, Pin_INT_C6000_RF_TX, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_INT_C6000_SYS, Pin_INT_C6000_SYS, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_INT_C6000_TS, Pin_INT_C6000_TS, kPORT_MuxAsGpio);
+
+    // Connections with C6000
+    PORT_SetPinMux(Port_INT_C6000_RESET, Pin_INT_C6000_RESET, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_INT_C6000_PWD, Pin_INT_C6000_PWD, kPORT_MuxAsGpio);
+
+    // Yet unknown
+    PORT_SetPinMux(Port_UNKOWN_A17, Pin_UNKOWN_A17, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_UNKOWN_B0, Pin_UNKOWN_B0, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_UNKOWN_C5, Pin_UNKOWN_C5, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_UNKOWN_C6, Pin_UNKOWN_C6, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_UNKOWN_C13, Pin_UNKOWN_C13, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_UNKOWN_C15, Pin_UNKOWN_C15, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_UNKOWN_E2, Pin_UNKOWN_E2, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_UNKOWN_E3, Pin_UNKOWN_E3, kPORT_MuxAsGpio);
+
     // LEDs
     GPIO_PinInit(GPIO_LEDgreen, Pin_LEDgreen, &pin_config_output);
     GPIO_PinInit(GPIO_LEDred, Pin_LEDred, &pin_config_output);
@@ -179,6 +227,78 @@ void init_GD77()
     GPIO_PinInit(GPIO_OFF_Switch, Pin_OFF_Switch, &pin_config_output);
     GPIO_PinInit(GPIO_OFF_Toggle, Pin_OFF_Toggle, &pin_config_input);
 	GPIO_PinWrite(GPIO_OFF_Switch, Pin_OFF_Switch, 1);
+
+    // I2C to AT24C512 EEPROM & AT1846S
+    GPIO_PinInit(GPIO_I2C_SCL, Pin_I2C_SCL, &pin_config_output);
+    GPIO_PinInit(GPIO_I2C_SDA, Pin_I2C_SDA, &pin_config_output);
+    GPIO_PinWrite(GPIO_I2C_SCL, Pin_I2C_SCL, 1);
+    GPIO_PinWrite(GPIO_I2C_SDA, Pin_I2C_SDA, 1);
+
+    // SPI to W25Q80BV 1M flash
+    GPIO_PinInit(GPIO_SPI_CS_FLASH, Pin_SPI_CS_FLASH, &pin_config_output);
+    GPIO_PinInit(GPIO_SPI_CLK_FLASH, Pin_SPI_CLK_FLASH, &pin_config_output);
+    GPIO_PinInit(GPIO_SPI_DI_FLASH,Pin_SPI_DI_FLASH, &pin_config_output);
+    GPIO_PinInit(GPIO_SPI_DO_FLASH, Pin_SPI_DO_FLASH, &pin_config_input);
+    GPIO_PinWrite(GPIO_SPI_CS_FLASH, Pin_SPI_CS_FLASH, 1);
+    GPIO_PinWrite(GPIO_SPI_CLK_FLASH, Pin_SPI_CLK_FLASH, 0);
+    GPIO_PinWrite(GPIO_SPI_DI_FLASH,Pin_SPI_DI_FLASH, 1);
+
+    // SPI to C6000 (C_SPI)
+    GPIO_PinInit(GPIO_SPI_CS_C6000_C, Pin_SPI_CS_C6000_C, &pin_config_output);
+    GPIO_PinInit(GPIO_SPI_CLK_C6000_C, Pin_SPI_CLK_C6000_C, &pin_config_output);
+    GPIO_PinInit(GPIO_SPI_DI_C6000_C,Pin_SPI_DI_C6000_C, &pin_config_output);
+    GPIO_PinInit(GPIO_SPI_DO_C6000_C, Pin_SPI_DO_C6000_C, &pin_config_input);
+    GPIO_PinWrite(GPIO_SPI_CS_C6000_C, Pin_SPI_CS_C6000_C, 1);
+    GPIO_PinWrite(GPIO_SPI_CLK_C6000_C, Pin_SPI_CLK_C6000_C, 0);
+    GPIO_PinWrite(GPIO_SPI_DI_C6000_C,Pin_SPI_DI_C6000_C, 1);
+
+    // SPI to C6000 (V_SPI)
+    GPIO_PinInit(GPIO_SPI_CS_C6000_V, Pin_SPI_CS_C6000_V, &pin_config_output);
+    GPIO_PinInit(GPIO_SPI_CLK_C6000_V, Pin_SPI_CLK_C6000_V, &pin_config_output);
+    GPIO_PinInit(GPIO_SPI_DI_C6000_V,Pin_SPI_DI_C6000_V, &pin_config_output);
+    GPIO_PinInit(GPIO_SPI_DO_C6000_V, Pin_SPI_DO_C6000_V, &pin_config_input);
+    GPIO_PinWrite(GPIO_SPI_CS_C6000_V, Pin_SPI_CS_C6000_V, 1);
+    GPIO_PinWrite(GPIO_SPI_CLK_C6000_V, Pin_SPI_CLK_C6000_V, 0);
+    GPIO_PinWrite(GPIO_SPI_DI_C6000_V,Pin_SPI_DI_C6000_V, 1);
+
+    // SPI to C6000 (U_SPI)
+    GPIO_PinInit(GPIO_SPI_CS_C6000_U, Pin_SPI_CS_C6000_U, &pin_config_output);
+    GPIO_PinInit(GPIO_SPI_CLK_C6000_U, Pin_SPI_CLK_C6000_U, &pin_config_output);
+    GPIO_PinInit(GPIO_SPI_DI_C6000_U,Pin_SPI_DI_C6000_U, &pin_config_output);
+    GPIO_PinInit(GPIO_SPI_DO_C6000_U, Pin_SPI_DO_C6000_U, &pin_config_input);
+    GPIO_PinWrite(GPIO_SPI_CS_C6000_U, Pin_SPI_CS_C6000_U, 1);
+    GPIO_PinWrite(GPIO_SPI_CLK_C6000_U, Pin_SPI_CLK_C6000_U, 0);
+    GPIO_PinWrite(GPIO_SPI_DI_C6000_U,Pin_SPI_DI_C6000_U, 1);
+
+    // C6000 interrupts
+    GPIO_PinInit(GPIO_INT_C6000_RF_RX, Pin_INT_C6000_RF_RX, &pin_config_input);
+    GPIO_PinInit(GPIO_INT_C6000_RF_TX, Pin_INT_C6000_RF_TX, &pin_config_input);
+    GPIO_PinInit(GPIO_INT_C6000_SYS, Pin_INT_C6000_SYS, &pin_config_input);
+    GPIO_PinInit(GPIO_INT_C6000_TS, Pin_INT_C6000_TS, &pin_config_input);
+
+    // Connections with C6000
+    GPIO_PinInit(GPIO_INT_C6000_RESET, Pin_INT_C6000_RESET, &pin_config_output);
+    GPIO_PinInit(GPIO_INT_C6000_PWD, Pin_INT_C6000_PWD, &pin_config_output);
+    GPIO_PinWrite(GPIO_INT_C6000_RESET, Pin_INT_C6000_RESET, 1);
+    GPIO_PinWrite(GPIO_INT_C6000_PWD, Pin_INT_C6000_PWD, 1);
+
+    // Yet unknown
+    GPIO_PinInit(GPIO_UNKOWN_A17, Pin_UNKOWN_A17, &pin_config_output);
+    GPIO_PinInit(GPIO_UNKOWN_B0, Pin_UNKOWN_B0, &pin_config_output);
+    GPIO_PinInit(GPIO_UNKOWN_C5, Pin_UNKOWN_C5, &pin_config_output);
+    GPIO_PinInit(GPIO_UNKOWN_C6, Pin_UNKOWN_C6, &pin_config_output);
+    GPIO_PinInit(GPIO_UNKOWN_C13, Pin_UNKOWN_C13, &pin_config_output);
+    GPIO_PinInit(GPIO_UNKOWN_C15, Pin_UNKOWN_C15, &pin_config_output);
+    GPIO_PinInit(GPIO_UNKOWN_E2, Pin_UNKOWN_E2, &pin_config_output);
+    GPIO_PinInit(GPIO_UNKOWN_E3, Pin_UNKOWN_E3, &pin_config_output);
+    GPIO_PinWrite(GPIO_UNKOWN_A17, Pin_UNKOWN_A17, 0);
+    GPIO_PinWrite(GPIO_UNKOWN_B0, Pin_UNKOWN_B0, 0);
+    GPIO_PinWrite(GPIO_UNKOWN_C5, Pin_UNKOWN_C5, 1);
+    GPIO_PinWrite(GPIO_UNKOWN_C6, Pin_UNKOWN_C6, 0);
+    GPIO_PinWrite(GPIO_UNKOWN_C13, Pin_UNKOWN_C13, 0);
+    GPIO_PinWrite(GPIO_UNKOWN_C15, Pin_UNKOWN_C15, 0);
+    GPIO_PinWrite(GPIO_UNKOWN_E2, Pin_UNKOWN_E2, 0);
+    GPIO_PinWrite(GPIO_UNKOWN_E3, Pin_UNKOWN_E3, 0);
 
     UC1701_begin();
 }
