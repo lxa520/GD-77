@@ -18,12 +18,15 @@ static gpio_pin_config_t pin_config_output =
 	0
 };
 
+// LEDs
 #define Port_LEDgreen	PORTB
 #define GPIO_LEDgreen	GPIOB
 #define Pin_LEDgreen	18
 #define Port_LEDred		PORTC
 #define GPIO_LEDred		GPIOC
 #define Pin_LEDred		14
+
+// Buttons
 #define Port_PTT		PORTA
 #define GPIO_PTT		GPIOA
 #define Pin_PTT			1
@@ -37,6 +40,7 @@ static gpio_pin_config_t pin_config_output =
 #define GPIO_Orange		GPIOA
 #define Pin_Orange		2
 
+// Keyboard column lines
 #define Port_Key_Col0   PORTC
 #define GPIO_Key_Col0 	GPIOC
 #define Pin_Key_Col0	0
@@ -50,6 +54,7 @@ static gpio_pin_config_t pin_config_output =
 #define GPIO_Key_Col3 	GPIOC
 #define Pin_Key_Col3 	3
 
+// Keyboard row lines
 #define Port_Key_Row0   PORTB
 #define GPIO_Key_Row0 	GPIOB
 #define Pin_Key_Row0	19
@@ -66,6 +71,7 @@ static gpio_pin_config_t pin_config_output =
 #define GPIO_Key_Row4 	GPIOB
 #define Pin_Key_Row4	23
 
+// Display
 #define Port_Display_Light	PORTC
 #define GPIO_Display_Light	GPIOC
 #define Pin_Display_Light	4
@@ -85,6 +91,7 @@ static gpio_pin_config_t pin_config_output =
 #define GPIO_Display_SDA 	GPIOC
 #define Pin_Display_SDA		12
 
+// Power On/Off logic
 #define Port_OFF_Switch     PORTE
 #define GPIO_OFF_Switch     GPIOE
 #define Pin_OFF_Switch		26

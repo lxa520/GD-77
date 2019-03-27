@@ -125,48 +125,59 @@ void init_GD77()
     CLOCK_EnableClock(kCLOCK_PortD);
     CLOCK_EnableClock(kCLOCK_PortE);
 
+    // LEDs
     PORT_SetPinMux(Port_LEDgreen, Pin_LEDgreen, kPORT_MuxAsGpio);
     PORT_SetPinMux(Port_LEDred, Pin_LEDred, kPORT_MuxAsGpio);
+
+    // Buttons
     PORT_SetPinMux(Port_PTT, Pin_PTT, kPORT_MuxAsGpio);
     PORT_SetPinMux(Port_SK1, Pin_SK1, kPORT_MuxAsGpio);
     PORT_SetPinMux(Port_SK2, Pin_SK2, kPORT_MuxAsGpio);
     PORT_SetPinMux(Port_Orange, Pin_Orange, kPORT_MuxAsGpio);
 
+    // Keyboard column lines
     PORT_SetPinMux(Port_Key_Col0, Pin_Key_Col0, kPORT_MuxAsGpio);
     PORT_SetPinMux(Port_Key_Col1, Pin_Key_Col1, kPORT_MuxAsGpio);
     PORT_SetPinMux(Port_Key_Col2, Pin_Key_Col2, kPORT_MuxAsGpio);
     PORT_SetPinMux(Port_Key_Col3, Pin_Key_Col3, kPORT_MuxAsGpio);
 
+    // Keyboard row lines
     PORT_SetPinMux(Port_Key_Row0, Pin_Key_Row0, kPORT_MuxAsGpio);
     PORT_SetPinMux(Port_Key_Row1, Pin_Key_Row1, kPORT_MuxAsGpio);
     PORT_SetPinMux(Port_Key_Row2, Pin_Key_Row2, kPORT_MuxAsGpio);
     PORT_SetPinMux(Port_Key_Row3, Pin_Key_Row3, kPORT_MuxAsGpio);
     PORT_SetPinMux(Port_Key_Row4, Pin_Key_Row4, kPORT_MuxAsGpio);
 
+    // Power On/Off logic
     PORT_SetPinMux(Port_OFF_Switch, Pin_OFF_Switch, kPORT_MuxAsGpio);
     PORT_SetPinMux(Port_OFF_Toggle, Pin_OFF_Toggle, kPORT_MuxAsGpio);
 
+    // LEDs
     GPIO_PinInit(GPIO_LEDgreen, Pin_LEDgreen, &pin_config_output);
     GPIO_PinInit(GPIO_LEDred, Pin_LEDred, &pin_config_output);
+
+    // Buttons
     GPIO_PinInit(GPIO_PTT, Pin_PTT, &pin_config_input);
     GPIO_PinInit(GPIO_SK1, Pin_SK1, &pin_config_input);
     GPIO_PinInit(GPIO_SK2, Pin_SK2, &pin_config_input);
     GPIO_PinInit(GPIO_Orange, Pin_Orange, &pin_config_input);
 
+    // Keyboard column lines
     GPIO_PinInit(GPIO_Key_Col0, Pin_Key_Col0, &pin_config_input);
     GPIO_PinInit(GPIO_Key_Col1, Pin_Key_Col1, &pin_config_input);
     GPIO_PinInit(GPIO_Key_Col2, Pin_Key_Col2, &pin_config_input);
     GPIO_PinInit(GPIO_Key_Col3, Pin_Key_Col3, &pin_config_input);
 
+    // Keyboard row lines
     GPIO_PinInit(GPIO_Key_Row0, Pin_Key_Row0, &pin_config_input);
     GPIO_PinInit(GPIO_Key_Row1, Pin_Key_Row1, &pin_config_input);
     GPIO_PinInit(GPIO_Key_Row2, Pin_Key_Row2, &pin_config_input);
     GPIO_PinInit(GPIO_Key_Row3, Pin_Key_Row3, &pin_config_input);
     GPIO_PinInit(GPIO_Key_Row4, Pin_Key_Row4, &pin_config_input);
 
+    // Power On/Off logic
     GPIO_PinInit(GPIO_OFF_Switch, Pin_OFF_Switch, &pin_config_output);
     GPIO_PinInit(GPIO_OFF_Toggle, Pin_OFF_Toggle, &pin_config_input);
-
 	GPIO_PinWrite(GPIO_OFF_Switch, Pin_OFF_Switch, 1);
 
     UC1701_begin();
