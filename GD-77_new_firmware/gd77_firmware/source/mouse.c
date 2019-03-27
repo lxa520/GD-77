@@ -149,8 +149,8 @@ void init_GD77()
     PORT_SetPinMux(Port_Key_Row4, Pin_Key_Row4, kPORT_MuxAsGpio);
 
     // Power On/Off logic
-    PORT_SetPinMux(Port_OFF_Switch, Pin_OFF_Switch, kPORT_MuxAsGpio);
-    PORT_SetPinMux(Port_OFF_Toggle, Pin_OFF_Toggle, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_Keep_Power_On, Pin_Keep_Power_On, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_Power_Switch, Pin_Power_Switch, kPORT_MuxAsGpio);
 
     // I2C to AT24C512 EEPROM & AT1846S
     PORT_SetPinMux(Port_I2C_SCL, Pin_I2C_SCL, kPORT_MuxAsGpio);
@@ -224,9 +224,9 @@ void init_GD77()
     GPIO_PinInit(GPIO_Key_Row4, Pin_Key_Row4, &pin_config_input);
 
     // Power On/Off logic
-    GPIO_PinInit(GPIO_OFF_Switch, Pin_OFF_Switch, &pin_config_output);
-    GPIO_PinInit(GPIO_OFF_Toggle, Pin_OFF_Toggle, &pin_config_input);
-	GPIO_PinWrite(GPIO_OFF_Switch, Pin_OFF_Switch, 1);
+    GPIO_PinInit(GPIO_Keep_Power_On, Pin_Keep_Power_On, &pin_config_output);
+    GPIO_PinInit(GPIO_Power_Switch, Pin_Power_Switch, &pin_config_input);
+	GPIO_PinWrite(GPIO_Keep_Power_On, Pin_Keep_Power_On, 1);
 
     // I2C to AT24C512 EEPROM & AT1846S
     GPIO_PinInit(GPIO_I2C_SCL, Pin_I2C_SCL, &pin_config_output);
@@ -476,7 +476,7 @@ void Display_task()
 
 	while(1U)
 	{
-    	if ((GPIO_PinRead(GPIO_OFF_Toggle, Pin_OFF_Toggle)!=0) && (!Shutdown))
+    	if ((GPIO_PinRead(GPIO_Power_Switch, Pin_Power_Switch)!=0) && (!Shutdown))
     	{
     		Show_SplashScreen=false;
     		SplashScreen_Timer=0;
@@ -484,7 +484,7 @@ void Display_task()
     		Shutdown=true;
 			Shutdown_Timer = 2000;
     	}
-    	else if ((GPIO_PinRead(GPIO_OFF_Toggle, Pin_OFF_Toggle)==0) && (Shutdown))
+    	else if ((GPIO_PinRead(GPIO_Power_Switch, Pin_Power_Switch)==0) && (Shutdown))
     	{
 			show_running();
 			Shutdown=false;
@@ -498,7 +498,7 @@ void Display_task()
     			Shutdown_Timer--;
     			if (Shutdown_Timer==0)
     			{
-    				GPIO_PinWrite(GPIO_OFF_Switch, Pin_OFF_Switch, 0);
+    				GPIO_PinWrite(GPIO_Keep_Power_On, Pin_Keep_Power_On, 0);
     			}
     		}
     	}

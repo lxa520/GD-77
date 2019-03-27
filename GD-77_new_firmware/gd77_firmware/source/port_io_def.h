@@ -92,12 +92,12 @@ static gpio_pin_config_t pin_config_output =
 #define Pin_Display_SDA		12
 
 // Power On/Off logic
-#define Port_OFF_Switch     PORTE
-#define GPIO_OFF_Switch     GPIOE
-#define Pin_OFF_Switch		26
-#define Port_OFF_Toggle     PORTA
-#define GPIO_OFF_Toggle 	GPIOA
-#define Pin_OFF_Toggle		13
+#define Port_Keep_Power_On  PORTE
+#define GPIO_Keep_Power_On  GPIOE
+#define Pin_Keep_Power_On	26
+#define Port_Power_Switch   PORTA
+#define GPIO_Power_Switch 	GPIOA
+#define Pin_Power_Switch	13
 
 // I2C to AT24C512 EEPROM & AT1846S
 // OUT/ON E24 - I2C SCL to AT24C512 EEPROM & AT1846S
