@@ -276,25 +276,34 @@ void init_GD77()
     GPIO_PinInit(GPIO_INT_C6000_SYS, Pin_INT_C6000_SYS, &pin_config_input);
     GPIO_PinInit(GPIO_INT_C6000_TS, Pin_INT_C6000_TS, &pin_config_input);
 
+    // Yet unknown
+    GPIO_PinInit(GPIO_UNKOWN_B0, Pin_UNKOWN_B0, &pin_config_output);
+    GPIO_PinInit(GPIO_UNKOWN_C5, Pin_UNKOWN_C5, &pin_config_output);
+    GPIO_PinInit(GPIO_UNKOWN_C6, Pin_UNKOWN_C6, &pin_config_output);
+    GPIO_PinWrite(GPIO_UNKOWN_B0, Pin_UNKOWN_B0, 0);
+    GPIO_PinWrite(GPIO_UNKOWN_C5, Pin_UNKOWN_C5, 1);
+    GPIO_PinWrite(GPIO_UNKOWN_C6, Pin_UNKOWN_C6, 0);
+
+    // More unknown pin initialization before SPI init of C6000
+    GPIO_PinWrite(GPIO_UNKOWN_C5, Pin_UNKOWN_C5, 0);
+    GPIO_PinWrite(GPIO_UNKOWN_C6, Pin_UNKOWN_C6, 1);
+
     // Connections with C6000
     GPIO_PinInit(GPIO_INT_C6000_RESET, Pin_INT_C6000_RESET, &pin_config_output);
     GPIO_PinInit(GPIO_INT_C6000_PWD, Pin_INT_C6000_PWD, &pin_config_output);
     GPIO_PinWrite(GPIO_INT_C6000_RESET, Pin_INT_C6000_RESET, 1);
     GPIO_PinWrite(GPIO_INT_C6000_PWD, Pin_INT_C6000_PWD, 1);
 
+    // More C6000 pin initialization before SPI init of C6000
+    GPIO_PinWrite(GPIO_INT_C6000_PWD, Pin_INT_C6000_PWD, 0);
+
     // Yet unknown
     GPIO_PinInit(GPIO_UNKOWN_A17, Pin_UNKOWN_A17, &pin_config_output);
-    GPIO_PinInit(GPIO_UNKOWN_B0, Pin_UNKOWN_B0, &pin_config_output);
-    GPIO_PinInit(GPIO_UNKOWN_C5, Pin_UNKOWN_C5, &pin_config_output);
-    GPIO_PinInit(GPIO_UNKOWN_C6, Pin_UNKOWN_C6, &pin_config_output);
     GPIO_PinInit(GPIO_UNKOWN_C13, Pin_UNKOWN_C13, &pin_config_output);
     GPIO_PinInit(GPIO_UNKOWN_C15, Pin_UNKOWN_C15, &pin_config_output);
     GPIO_PinInit(GPIO_UNKOWN_E2, Pin_UNKOWN_E2, &pin_config_output);
     GPIO_PinInit(GPIO_UNKOWN_E3, Pin_UNKOWN_E3, &pin_config_output);
     GPIO_PinWrite(GPIO_UNKOWN_A17, Pin_UNKOWN_A17, 0);
-    GPIO_PinWrite(GPIO_UNKOWN_B0, Pin_UNKOWN_B0, 0);
-    GPIO_PinWrite(GPIO_UNKOWN_C5, Pin_UNKOWN_C5, 1);
-    GPIO_PinWrite(GPIO_UNKOWN_C6, Pin_UNKOWN_C6, 0);
     GPIO_PinWrite(GPIO_UNKOWN_C13, Pin_UNKOWN_C13, 0);
     GPIO_PinWrite(GPIO_UNKOWN_C15, Pin_UNKOWN_C15, 0);
     GPIO_PinWrite(GPIO_UNKOWN_E2, Pin_UNKOWN_E2, 0);
