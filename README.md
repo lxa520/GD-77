@@ -1,5 +1,5 @@
-# GD-77
-GD-77 and GD-77S reverse engineering
+# GD-77, GD-77S and RD-5R
+GD-77, GD-77S and RD-5R reverse engineering
 
 # Details
 "Radioddity_GD-77" contains the original encrypted GD-77 firmware files collected by Roger Clark (https://github.com/rogerclarkmelbourne/Radioddity_GD-77.git) as they also are or have been available on the Radioddity web site.
