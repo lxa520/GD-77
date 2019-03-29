@@ -12,6 +12,10 @@ GD-77, GD-77S and RD-5R reverse engineering
 
 "GD-77_firmware_stripper_workdir" contains the executable and the batch. Run it to receive the results.
 
+"GD-77_firmware_find_shift" searches for the firmware file decryption shift values.
+
+"GD-77_firmware_find_shift_workdir" contains the executable and the batch. Run it to receive the results.
+
 "GD-77_firmware_decrypt_encrypt" contains the source for the firmware decrypt/encrypt tool. It uses a keyfile and a sequence entry point for XORing and applies an additional XOR/negate/rotate step and with that decrypts or encrypts a firmware file.
 
 "GD-77_firmware_decrypt_encrypt_workdir" contains the executable and the batch. Run it to receive the results.
