@@ -223,6 +223,9 @@ void init_GD77()
     GPIO_PinInit(GPIO_Key_Row3, Pin_Key_Row3, &pin_config_input);
     GPIO_PinInit(GPIO_Key_Row4, Pin_Key_Row4, &pin_config_input);
 
+    // Init display
+    UC1701_begin();
+
     // Power On/Off logic
     GPIO_PinInit(GPIO_Keep_Power_On, Pin_Keep_Power_On, &pin_config_output);
     GPIO_PinInit(GPIO_Power_Switch, Pin_Power_Switch, &pin_config_input);
@@ -308,8 +311,6 @@ void init_GD77()
     GPIO_PinWrite(GPIO_UNKOWN_C15, Pin_UNKOWN_C15, 0);
     GPIO_PinWrite(GPIO_UNKOWN_E2, Pin_UNKOWN_E2, 0);
     GPIO_PinWrite(GPIO_UNKOWN_E3, Pin_UNKOWN_E3, 0);
-
-    UC1701_begin();
 }
 
 uint8_t read_keyboard_col()
