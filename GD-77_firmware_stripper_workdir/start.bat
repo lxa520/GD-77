@@ -20,5 +20,7 @@ firmware_stripper GD-77_V3.1.6
 firmware_stripper GD-77_V3.1.8
 firmware_stripper GD-77_V3.2.1
 firmware_stripper GD-77S_V1.2.0
+firmware_stripper BF-5R_V2.0.9
+firmware_stripper BF-5R_V2.1.0
 firmware_stripper BF-5R_V2.1.6
 pause
