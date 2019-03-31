@@ -190,15 +190,15 @@ void init_GD77()
     PORT_SetPinMux(Port_INT_C6000_RESET, Pin_INT_C6000_RESET, kPORT_MuxAsGpio);
     PORT_SetPinMux(Port_INT_C6000_PWD, Pin_INT_C6000_PWD, kPORT_MuxAsGpio);
 
-    // Yet unknown
-    PORT_SetPinMux(Port_UNKOWN_A17, Pin_UNKOWN_A17, kPORT_MuxAsGpio);
-    PORT_SetPinMux(Port_UNKOWN_B0, Pin_UNKOWN_B0, kPORT_MuxAsGpio);
-    PORT_SetPinMux(Port_UNKOWN_C5, Pin_UNKOWN_C5, kPORT_MuxAsGpio);
-    PORT_SetPinMux(Port_UNKOWN_C6, Pin_UNKOWN_C6, kPORT_MuxAsGpio);
-    PORT_SetPinMux(Port_UNKOWN_C13, Pin_UNKOWN_C13, kPORT_MuxAsGpio);
-    PORT_SetPinMux(Port_UNKOWN_C15, Pin_UNKOWN_C15, kPORT_MuxAsGpio);
-    PORT_SetPinMux(Port_UNKOWN_E2, Pin_UNKOWN_E2, kPORT_MuxAsGpio);
-    PORT_SetPinMux(Port_UNKOWN_E3, Pin_UNKOWN_E3, kPORT_MuxAsGpio);
+    // Other connections
+    PORT_SetPinMux(Port_RF_ant_switch, Pin_RF_ant_switch, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_speaker_mute, Pin_speaker_mute, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_RX_audio_mux, Pin_RX_audio_mux, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_TX_audio_mux, Pin_TX_audio_mux, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_VHF_RX_amp_power, Pin_VHF_RX_amp_power, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_UHF_RX_amp_power, Pin_UHF_RX_amp_power, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_UHF_TX_amp_power, Pin_UHF_TX_amp_power, kPORT_MuxAsGpio);
+    PORT_SetPinMux(Port_VHF_TX_amp_power, Pin_VHF_TX_amp_power, kPORT_MuxAsGpio);
 
     // LEDs
     GPIO_PinInit(GPIO_LEDgreen, Pin_LEDgreen, &pin_config_output);
@@ -279,17 +279,13 @@ void init_GD77()
     GPIO_PinInit(GPIO_INT_C6000_SYS, Pin_INT_C6000_SYS, &pin_config_input);
     GPIO_PinInit(GPIO_INT_C6000_TS, Pin_INT_C6000_TS, &pin_config_input);
 
-    // Yet unknown
-    GPIO_PinInit(GPIO_UNKOWN_B0, Pin_UNKOWN_B0, &pin_config_output);
-    GPIO_PinInit(GPIO_UNKOWN_C5, Pin_UNKOWN_C5, &pin_config_output);
-    GPIO_PinInit(GPIO_UNKOWN_C6, Pin_UNKOWN_C6, &pin_config_output);
-    GPIO_PinWrite(GPIO_UNKOWN_B0, Pin_UNKOWN_B0, 0);
-    GPIO_PinWrite(GPIO_UNKOWN_C5, Pin_UNKOWN_C5, 1);
-    GPIO_PinWrite(GPIO_UNKOWN_C6, Pin_UNKOWN_C6, 0);
-
-    // More unknown pin initialization before SPI init of C6000
-    GPIO_PinWrite(GPIO_UNKOWN_C5, Pin_UNKOWN_C5, 0);
-    GPIO_PinWrite(GPIO_UNKOWN_C6, Pin_UNKOWN_C6, 1);
+    // Speaker mute and RX/TX mux init
+    GPIO_PinInit(GPIO_speaker_mute, Pin_speaker_mute, &pin_config_output);
+    GPIO_PinInit(GPIO_RX_audio_mux, Pin_RX_audio_mux, &pin_config_output);
+    GPIO_PinInit(GPIO_TX_audio_mux, Pin_TX_audio_mux, &pin_config_output);
+    GPIO_PinWrite(GPIO_speaker_mute, Pin_speaker_mute, 0);
+    GPIO_PinWrite(GPIO_RX_audio_mux, Pin_RX_audio_mux, 1);
+    GPIO_PinWrite(GPIO_TX_audio_mux, Pin_TX_audio_mux, 0);
 
     // Connections with C6000
     GPIO_PinInit(GPIO_INT_C6000_RESET, Pin_INT_C6000_RESET, &pin_config_output);
@@ -297,20 +293,26 @@ void init_GD77()
     GPIO_PinWrite(GPIO_INT_C6000_RESET, Pin_INT_C6000_RESET, 1);
     GPIO_PinWrite(GPIO_INT_C6000_PWD, Pin_INT_C6000_PWD, 1);
 
-    // More C6000 pin initialization before SPI init of C6000
+    // Wake up C6000
     GPIO_PinWrite(GPIO_INT_C6000_PWD, Pin_INT_C6000_PWD, 0);
 
-    // Yet unknown
-    GPIO_PinInit(GPIO_UNKOWN_A17, Pin_UNKOWN_A17, &pin_config_output);
-    GPIO_PinInit(GPIO_UNKOWN_C13, Pin_UNKOWN_C13, &pin_config_output);
-    GPIO_PinInit(GPIO_UNKOWN_C15, Pin_UNKOWN_C15, &pin_config_output);
-    GPIO_PinInit(GPIO_UNKOWN_E2, Pin_UNKOWN_E2, &pin_config_output);
-    GPIO_PinInit(GPIO_UNKOWN_E3, Pin_UNKOWN_E3, &pin_config_output);
-    GPIO_PinWrite(GPIO_UNKOWN_A17, Pin_UNKOWN_A17, 0);
-    GPIO_PinWrite(GPIO_UNKOWN_C13, Pin_UNKOWN_C13, 0);
-    GPIO_PinWrite(GPIO_UNKOWN_C15, Pin_UNKOWN_C15, 0);
-    GPIO_PinWrite(GPIO_UNKOWN_E2, Pin_UNKOWN_E2, 0);
-    GPIO_PinWrite(GPIO_UNKOWN_E3, Pin_UNKOWN_E3, 0);
+    // CS6000 SPI init (part I)
+    // TBD
+
+    // Antenna switch and UHF/VHF RX/TX amp init
+    GPIO_PinInit(GPIO_RF_ant_switch, Pin_RF_ant_switch, &pin_config_output);
+    GPIO_PinInit(GPIO_VHF_RX_amp_power, Pin_VHF_RX_amp_power, &pin_config_output);
+    GPIO_PinInit(GPIO_UHF_RX_amp_power, Pin_UHF_RX_amp_power, &pin_config_output);
+    GPIO_PinInit(GPIO_UHF_TX_amp_power, Pin_UHF_TX_amp_power, &pin_config_output);
+    GPIO_PinInit(GPIO_VHF_TX_amp_power, Pin_VHF_TX_amp_power, &pin_config_output);
+    GPIO_PinWrite(GPIO_RF_ant_switch, Pin_RF_ant_switch, 0);
+    GPIO_PinWrite(GPIO_VHF_RX_amp_power, Pin_VHF_RX_amp_power, 0);
+    GPIO_PinWrite(GPIO_UHF_RX_amp_power, Pin_UHF_RX_amp_power, 0);
+    GPIO_PinWrite(GPIO_UHF_TX_amp_power, Pin_UHF_TX_amp_power, 0);
+    GPIO_PinWrite(GPIO_VHF_TX_amp_power, Pin_VHF_TX_amp_power, 0);
+
+    // CS6000 SPI init (part II)
+    // TBD
 }
 
 uint8_t read_keyboard_col()
