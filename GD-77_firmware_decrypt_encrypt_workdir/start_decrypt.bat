@@ -21,4 +21,6 @@ firmware_decrypt GD-77S_V1.2.0_1A0C2_050001 datafile 0x2a8e decrypt
 firmware_decrypt BF-5R_V2.0.9_1AE1B_078001 datafile 0x4fff decrypt
 firmware_decrypt BF-5R_V2.1.0_1BB37_078001 datafile 0x2f2b decrypt
 firmware_decrypt BF-5R_V2.1.6_BB8A_078001 datafile 0x7d54 decrypt
+firmware_decrypt MD-760_V2.6.5_7BFC_075801 datafile 0x7b70 decrypt
+firmware_decrypt DM-1801_V2.1.9_1FF08_078001 datafile 0x2c7c decrypt
 pause

@@ -1,12 +1,16 @@
-# GD-77, GD-77S and RD-5R
-GD-77, GD-77S and RD-5R reverse engineering
+# GD-77, GD-77S, RD-5R, MD-760 and DM-1801
+GD-77, GD-77S, RD-5R, MD-760 and DM-1801 reverse engineering
 
 # Details
-"Radioddity_GD-77" contains the original encrypted GD-77 firmware files collected by Roger Clark (https://github.com/rogerclarkmelbourne/Radioddity_GD-77.git) as they also are or have been available on the Radioddity web site.
+"Radioddity_GD-77" contains the original encrypted GD-77 firmware files collected by Roger Clark (https://github.com/rogerclarkmelbourne/Radioddity_GD-77.git) as they also are or have been available on the manufacturers web site.
 
-"Radioddity_GD-77S" contains original encrypted GD-77S firmware files as they also are or have been available on the Radioddity web site.
+"Radioddity_GD-77S" contains original encrypted GD-77S firmware files as they also are or have been available on the manufacturers web site.
 
-"Baofeng_RD-5R" contains original encrypted RD-5R firmware files as they also are or have been available on the Radioddity web site.
+"Baofeng_RD-5R" contains original encrypted RD-5R firmware files as they also are or have been available on the manufacturers web site.
+
+"MD-760" contains original encrypted MD-760 firmware files as they also are or have been available on the manufacturers web site.
+
+"DM-1801" contains original encrypted DM-1801 firmware files as they also are or have been available on the manufacturers web site.
 
 "GD-77_firmware_stripper" contains the source for the firmware stripping tool. It removes the header and seperates the raw encrytped firmware data as it is transfered by the uploader.
 

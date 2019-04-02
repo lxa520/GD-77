@@ -21,4 +21,6 @@ firmware_find_shift GD-77S_V1.2.0_1A0C2_050001 datafile search_endpattern >> res
 firmware_find_shift BF-5R_V2.0.9_1AE1B_078001 datafile search_endpattern >> results_search_endpattern.txt
 firmware_find_shift BF-5R_V2.1.0_1BB37_078001 datafile search_endpattern >> results_search_endpattern.txt
 firmware_find_shift BF-5R_V2.1.6_BB8A_078001 datafile search_endpattern >> results_search_endpattern.txt
+firmware_find_shift MD-760_V2.6.5_7BFC_075801 datafile search_endpattern >> results_search_endpattern.txt
+firmware_find_shift DM-1801_V2.1.9_1FF08_078001 datafile search_endpattern >> results_search_endpattern.txt
 pause
